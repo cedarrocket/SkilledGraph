@@ -1,0 +1,174 @@
+{
+  "started_utc": "2026-10-09T00:32:28.736690+00:00",
+  "requested_model": "deepseek:deepseek-chat",
+  "served_models": [
+    "deepseek-flash"
+  ],
+  "passed": 2,
+  "total": 3,
+  "api_calls_in_process": 6,
+  "tokens_in_process": {
+    "input_tokens": 1573,
+    "output_tokens": 240,
+    "total_tokens": 1813
+  },
+  "results": [
+    {
+      "case": "chain_history",
+      "passed": false,
+      "error": "AssertionError: History not followed",
+      "seconds": 2.693,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 17,
+            "output_tokens": 13,
+            "total_tokens": 30,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_HISTORY_S<sentinel_placeholder_0>",
+          "tool_calls": []
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 33,
+            "output_tokens": 34,
+            "total_tokens": 67,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "I can't reproduce that message exactly because no previous assistant message was provided in this conversation. If you paste the message you want repeated, I'll output it verbatim.",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "tool_argument_error_recovery",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "checked_lookup",
+          "checked_lookup"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_Nd8Sk9q3qw5dmZIq8Yq46622",
+            "content": "Error invoking tool 'checked_lookup' with kwargs {'label': 'invalid'} with error:\n label: Input should be 'valid'\n Please fix the error and try again.",
+            "status": "error"
+          },
+          {
+            "id": "call_00_uiQZSo3mqcOzOI9eXjz88981",
+            "content": "RECOVERED",
+            "status": "success"
+          }
+        ],
+        "final": "Done. The first call with `label: \"invalid\"` was rejected by the schema (error: `label: Input should be 'valid'`). Retrying with `label: \"valid\"` succeeded and returned **RECOVERED**."
+      },
+      "seconds": 4.667,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 327,
+            "output_tokens": 50,
+            "total_tokens": 377,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "I'll start by deliberately requesting the invalid label, as instructed.",
+          "tool_calls": [
+            {
+              "name": "checked_lookup",
+              "args": {
+                "label": "invalid"
+              },
+              "id": "call_00_Nd8Sk9q3qw5dmZIq8Yq46622",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 423,
+            "output_tokens": 55,
+            "total_tokens": 478,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "The error confirms only `valid` is accepted. Now retrying with the valid label.",
+          "tool_calls": [
+            {
+              "name": "checked_lookup",
+              "args": {
+                "label": "valid"
+              },
+              "id": "call_00_uiQZSo3mqcOzOI9eXjz88981",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 493,
+            "output_tokens": 50,
+            "total_tokens": 543,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "Done. The first call with `label: \"invalid\"` was rejected by the schema (error: `label: Input should be 'valid'`). Retrying with `label: \"valid\"` succeeded and returned **RECOVERED**.",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "tool_business_error_propagation",
+      "passed": true,
+      "detail": {
+        "expected_exception": "ValueError",
+        "message": "SG_SYNTHETIC_BUSINESS_ERROR"
+      },
+      "seconds": 1.485,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 280,
+            "output_tokens": 38,
+            "total_tokens": 318,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "",
+          "tool_calls": [
+            {
+              "name": "fail_business",
+              "args": {
+                "value": 1
+              },
+              "id": "call_00_Ls53hKB41K1rKXZOisWI6453",
+              "type": "tool_call"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Synthetic test data only. CLI child call excluded from in-process token totals. No MCP."
+}

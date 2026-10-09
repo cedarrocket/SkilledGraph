@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-09T03:23:31.564060+00:00",
+  "model": "deepseek:deepseek-chat",
+  "cases": [
+    {
+      "name": "16-batch-digest",
+      "calls": [
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 97,
+            "output_tokens": 49,
+            "total_tokens": 146,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 95,
+            "output_tokens": 32,
+            "total_tokens": 127,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 95,
+            "output_tokens": 30,
+            "total_tokens": 125,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_REPORT",
+          "usage": {
+            "input_tokens": 333,
+            "output_tokens": 205,
+            "total_tokens": 538,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        }
+      ],
+      "passed": true,
+      "reply": "总览：共3份文档，涉及发布、支持审查、工程评审。发布安排已明确Alice负责周二发布，Bob周一检查回滚预案（文档1）。支持审查确认上周两次重复收费，Carol负责核实订单记录，完成日期未定（文档2）。工程评审拟为average空输入行为增加测试，负责人未定，周五为评审日期，非完成日期（文档3）。\n\n行动项：\n- 完成自动测试，负责人Alice，周二发布前（文档1）。\n- 检查回滚预案，负责人Bob，周一（文档1）。\n- 核实订单记录，负责人Carol，完成日期未定（文档2）。\n- 准备average空输入行为测试，负责人未定，日期未定；周五仅为评审日期（文档3）。\n\n未解决问题：\n- 重复收费核实完成日期未知（文档2）。\n- average空输入测试负责人未知（文档3）。\n- average空输入测试完成日期未知，周五不能视为完成日期（文档3）。"
+    }
+  ]
+}

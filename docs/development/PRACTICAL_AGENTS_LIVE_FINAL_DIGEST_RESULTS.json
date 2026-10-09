@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-09T03:25:52.417512+00:00",
+  "model": "deepseek:deepseek-chat",
+  "cases": [
+    {
+      "name": "16-batch-digest",
+      "calls": [
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 97,
+            "output_tokens": 48,
+            "total_tokens": 145,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 95,
+            "output_tokens": 36,
+            "total_tokens": 131,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 95,
+            "output_tokens": 30,
+            "total_tokens": 125,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_REPORT",
+          "usage": {
+            "input_tokens": 376,
+            "output_tokens": 209,
+            "total_tokens": 585,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        }
+      ],
+      "passed": true,
+      "reply": "**总览**\n- 发布安排：Alice 周二发布，发布前完成自动测试；Bob 周一检查回滚预案（文档1）。\n- 支持审查：上周两次重复收费报告，Carol 核实订单记录，完成日期未定（文档2）。\n- 工程评审：为 average 空输入行为增加测试，负责人未定（文档3）。\n\n**待办**\n- 完成自动测试（文档1）。\n- 检查回滚预案（文档1）。\n- 核实订单记录（文档2）。\n- 准备 average 空输入行为测试（文档3）。\n\n**未解决问题**\n- 重复收费核实完成日期未知（文档2）。\n- average 测试负责人未知（文档3）。\n\n**原文依据**\n- “Alice 负责周二发布，发布前需要完成自动测试。Bob 周一检查回滚预案。”（文档1）\n- “Carol 负责核实订单记录，完成日期未定。”（文档2）\n- “负责人未定，评审日期为周五。”（文档3）"
+    }
+  ]
+}

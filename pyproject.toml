@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skilledgraph"
+version = "0.1.0.dev0"
+description = "A Markdown DSL for personal LangGraph workflows"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["markdown-it-py==3.0.0"]
+
+[project.scripts]
+sgraph = "skilledgraph.cli:main"
+sgraph-agent = "sgraph_agent.host:cli"
+
+[project.optional-dependencies]
+runtime = ["langgraph==1.2.14", "langchain-core==1.6.9"]
+chat = ["langgraph==1.2.14", "langchain-core==1.6.9", "langchain==1.4.4", "langchain-openai==1.7.0", "prompt-toolkit==3.0.52"]
+
+deepseek = ["langgraph==1.2.14", "langchain-core==1.6.9", "langchain==1.4.4", "langchain-deepseek==1.1.1", "prompt-toolkit==3.0.52"]
+
+mcp = ["langgraph==1.2.14", "langchain-core==1.6.9", "langchain[mcp]==1.4.4", "fastmcp==4.1.0", "mcp==2.3.0", "prompt-toolkit==3.0.52"]
+
+monty = ["langgraph==1.2.14", "langchain-core==1.6.9", "pydantic-monty==1.1.0"]
+agent = ["langgraph==1.2.14", "langchain-core==1.6.9", "langchain-openai==1.7.0", "prompt-toolkit==3.0.52", "pydantic-monty==1.1.0"]
+
+[tool.setuptools.packages.find]
+where = ["src", ".", "examples/chat-host/src"]
+include = ["skilledgraph*", "sgraph_agent*", "sgraph_chat_host*"]
+
+[tool.setuptools.package-data]
+sgraph_agent = ["workflow.md"]

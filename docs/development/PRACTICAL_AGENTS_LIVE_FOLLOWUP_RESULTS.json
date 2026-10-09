@@ -1,0 +1,153 @@
+{
+  "date": "2026-10-09T03:21:29.162227+00:00",
+  "model": "deepseek:deepseek-chat",
+  "cases": [
+    {
+      "name": "13-csv-auditor",
+      "calls": [
+        {
+          "task": "TASK: CSV_AUDIT",
+          "usage": {
+            "input_tokens": 174,
+            "output_tokens": 100,
+            "total_tokens": 274,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        }
+      ],
+      "passed": true,
+      "reply": "共 5 行；可解析金额合计 30.50（尚未去重）。\n重复 ID：['A2']；金额非法行：[5]。\n建议：核实重复 ID A2 的两条记录是否属于同一笔交易，确认前不要删除任何记录。；检查第 5 行 amount 非法值，修正为有效金额后重新计算合计。；合计 30.50 尚未去重，去重后需重新汇总。"
+    },
+    {
+      "name": "15-parallel-code-review",
+      "calls": [
+        {
+          "task": "TASK: REVIEW_CORRECTNESS",
+          "usage": {
+            "input_tokens": 101,
+            "output_tokens": 51,
+            "total_tokens": 152,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: REVIEW_MAINTAINABILITY",
+          "usage": {
+            "input_tokens": 97,
+            "output_tokens": 94,
+            "total_tokens": 191,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: REVIEW_SECURITY",
+          "usage": {
+            "input_tokens": 98,
+            "output_tokens": 84,
+            "total_tokens": 182,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: REVIEW_REPORT",
+          "usage": {
+            "input_tokens": 382,
+            "output_tokens": 254,
+            "total_tokens": 636,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        }
+      ],
+      "passed": true,
+      "reply": "## 优先级列表\n\n**P0 确定问题**\n- 命令注入：`run_job` 第9行 `os.system(user_command)`。AST 确认调用点，但漏洞成立取决于 `user_command` 是否外部可控——需验证调用方。若可控，可执行任意命令。修复：改用 `subprocess.run([...], shell=False)`，或严格白名单校验。\n\n**P1 确定问题**\n- `average([])` 第5行 `sum/len` 除零，必现 ZeroDivisionError。修复：空列表显式抛 `ValueError` 或返回 `None`。\n\n**P2 疑点（需验证）**\n- `run_job` 返回值语义：`os.system` 仅返回退出码，调用方若期望命令输出会静默出错。需查调用方。\n- `user_command` 来源未知，是判定 P0 严重度的关键，AST 无法证明。\n\n**P3 改进**\n- 补类型注解；`run_job` 命名与职责不清，建议 `run_shell_command` 并返回结构化结果。\n\n注：静态结果仅证明调用存在，不证明漏洞成立。"
+    },
+    {
+      "name": "16-batch-digest",
+      "calls": [
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 97,
+            "output_tokens": 49,
+            "total_tokens": 146,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 95,
+            "output_tokens": 36,
+            "total_tokens": 131,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 95,
+            "output_tokens": 30,
+            "total_tokens": 125,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_REPORT",
+          "usage": {
+            "input_tokens": 218,
+            "output_tokens": 102,
+            "total_tokens": 320,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        }
+      ],
+      "passed": true,
+      "reply": "总览：共3份文档，涉及发布安排、重复收费审查、空输入测试。\n\n行动项：\n- 自动测试（文档1，Alice，周二前）\n- 回滚预案检查（文档1，Bob，周一）\n- 核实订单记录（文档2，Carol，日期未定）\n- 准备average空输入测试（文档3，负责人未定，周五）\n\n未解决：\n- 文档2完成日期未定\n- 文档3测试负责人未定"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "date_utc": "2026-10-09T00:44:58.281528+00:00",
+  "live": true,
+  "versions": {
+    "langchain": "1.4.4",
+    "fastmcp": "4.1.0",
+    "mcp": "2.3.0"
+  },
+  "results": [
+    {
+      "case": "discovery",
+      "passed": true,
+      "tools": [
+        "mcp_add"
+      ]
+    },
+    {
+      "case": "direct_call",
+      "passed": true,
+      "result": {
+        "sum": 42,
+        "call_count": 1,
+        "server_pid": 399270
+      }
+    },
+    {
+      "case": "graph_two_rounds",
+      "passed": true,
+      "tool_results": [
+        {
+          "sum": 42,
+          "call_count": 2,
+          "server_pid": 399270
+        },
+        {
+          "sum": 5,
+          "call_count": 3,
+          "server_pid": 399270
+        }
+      ]
+    },
+    {
+      "case": "deepseek_mcp_graph",
+      "passed": true,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 324,
+            "output_tokens": 54,
+            "total_tokens": 378,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_calls": [
+            {
+              "name": "mcp_add",
+              "args": {
+                "a": 17,
+                "b": 25
+              },
+              "id": "call_00_MQ1rdbB38aHKhCOPxiVy4644",
+              "type": "tool_call"
+            }
+          ],
+          "text": ""
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 421,
+            "output_tokens": 21,
+            "total_tokens": 442,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "tool_calls": [],
+          "text": "17 加 25 的结果是 **42**（由 mcp_add 工具计算得出）。"
+        }
+      ],
+      "tool_results": [
+        {
+          "sum": 42,
+          "call_count": 4,
+          "server_pid": 399270
+        }
+      ],
+      "final": "17 加 25 的结果是 **42**（由 mcp_add 工具计算得出）。"
+    },
+    {
+      "case": "server_cleanup",
+      "passed": true
+    }
+  ]
+}

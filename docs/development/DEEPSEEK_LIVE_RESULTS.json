@@ -1,0 +1,1067 @@
+{
+  "started_utc": "2026-10-09T00:34:15.987043+00:00",
+  "requested_model": "deepseek:deepseek-chat",
+  "served_models": [
+    "deepseek-flash"
+  ],
+  "passed": 15,
+  "total": 15,
+  "api_calls_in_process": 26,
+  "tokens_in_process": {
+    "input_tokens": 5292,
+    "output_tokens": 608,
+    "total_tokens": 5900
+  },
+  "results": [
+    {
+      "case": "ordinary_prompt",
+      "passed": true,
+      "detail": {
+        "reply": "SG_LIVE_OK"
+      },
+      "seconds": 0.647,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Reply exactly SG_LIVE_OK."
+            },
+            {
+              "type": "human",
+              "text": "test"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 13,
+            "output_tokens": 4,
+            "total_tokens": 17,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_LIVE_OK",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "chain_history",
+      "passed": true,
+      "detail": {
+        "replies": [
+          "蓝鲸",
+          "前一条助手回复提到的动物是蓝鲸。"
+        ],
+        "second_input": [
+          {
+            "type": "system",
+            "text": "用一句话说明前一条助手回复提到的动物，必须包含这个动物的名称。"
+          },
+          {
+            "type": "human",
+            "text": "开始"
+          },
+          {
+            "type": "ai",
+            "text": "蓝鲸"
+          }
+        ]
+      },
+      "seconds": 2.092,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "回答“蓝鲸”，不要加其他文字。"
+            },
+            {
+              "type": "human",
+              "text": "开始"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 16,
+            "output_tokens": 2,
+            "total_tokens": 18,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "蓝鲸",
+          "tool_calls": []
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "用一句话说明前一条助手回复提到的动物，必须包含这个动物的名称。"
+            },
+            {
+              "type": "human",
+              "text": "开始"
+            },
+            {
+              "type": "ai",
+              "text": "蓝鲸"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 27,
+            "output_tokens": 10,
+            "total_tokens": 37,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "前一条助手回复提到的动物是蓝鲸。",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "routing_list_yes",
+      "passed": true,
+      "detail": {
+        "route": "yes",
+        "reply": "SG_YES"
+      },
+      "seconds": 2.404,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Return only yes if user text contains apple, otherwise return only no."
+            },
+            {
+              "type": "human",
+              "text": "apple"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 1,
+            "total_tokens": 21,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "yes",
+          "tool_calls": []
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Reply exactly SG_YES."
+            },
+            {
+              "type": "human",
+              "text": "apple"
+            },
+            {
+              "type": "ai",
+              "text": "yes"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 16,
+            "output_tokens": 3,
+            "total_tokens": 19,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_YES",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "routing_list_no",
+      "passed": true,
+      "detail": {
+        "route": "no",
+        "reply": "SG_NO"
+      },
+      "seconds": 2.048,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Return only yes if user text contains apple, otherwise return only no."
+            },
+            {
+              "type": "human",
+              "text": "orange"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 1,
+            "total_tokens": 21,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "no",
+          "tool_calls": []
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Reply exactly SG_NO."
+            },
+            {
+              "type": "human",
+              "text": "orange"
+            },
+            {
+              "type": "ai",
+              "text": "no"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 15,
+            "output_tokens": 2,
+            "total_tokens": 17,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_NO",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "routing_table_yes",
+      "passed": true,
+      "detail": {
+        "route": "yes",
+        "reply": "SG_YES"
+      },
+      "seconds": 2.245,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Return only yes if user text contains apple, otherwise return only no."
+            },
+            {
+              "type": "human",
+              "text": "apple"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 1,
+            "total_tokens": 21,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "yes",
+          "tool_calls": []
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Reply exactly SG_YES."
+            },
+            {
+              "type": "human",
+              "text": "apple"
+            },
+            {
+              "type": "ai",
+              "text": "yes"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 16,
+            "output_tokens": 3,
+            "total_tokens": 19,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_YES",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "routing_table_no",
+      "passed": true,
+      "detail": {
+        "route": "no",
+        "reply": "SG_NO"
+      },
+      "seconds": 1.835,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Return only yes if user text contains apple, otherwise return only no."
+            },
+            {
+              "type": "human",
+              "text": "orange"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 1,
+            "total_tokens": 21,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "no",
+          "tool_calls": []
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Reply exactly SG_NO."
+            },
+            {
+              "type": "human",
+              "text": "orange"
+            },
+            {
+              "type": "ai",
+              "text": "no"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 15,
+            "output_tokens": 2,
+            "total_tokens": 17,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_NO",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "pyfunction_material",
+      "passed": true,
+      "detail": {
+        "reply": "SG_MATERIAL_842"
+      },
+      "seconds": 0.867,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Reply only with the SG_ token from the synthetic lookup result."
+            },
+            {
+              "type": "human",
+              "text": "look up"
+            },
+            {
+              "type": "human",
+              "text": "Synthetic lookup result: SG_MATERIAL_842"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 32,
+            "output_tokens": 6,
+            "total_tokens": 38,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_MATERIAL_842",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "single_tool_sync",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "add"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_MX5sfaZeDinZsSVxZisD6655",
+            "content": "42",
+            "status": "success"
+          }
+        ],
+        "final": "42"
+      },
+      "seconds": 2.003,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Always use add for arithmetic. After tool result, answer with only the number."
+            },
+            {
+              "type": "human",
+              "text": "Use add to calculate 17 + 25."
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 305,
+            "output_tokens": 52,
+            "total_tokens": 357,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "",
+          "tool_calls": [
+            {
+              "name": "add",
+              "args": {
+                "a": 17,
+                "b": 25
+              },
+              "id": "call_00_MX5sfaZeDinZsSVxZisD6655",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Always use add for arithmetic. After tool result, answer with only the number."
+            },
+            {
+              "type": "human",
+              "text": "Use add to calculate 17 + 25."
+            },
+            {
+              "type": "ai",
+              "text": ""
+            },
+            {
+              "type": "tool",
+              "text": "42"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 370,
+            "output_tokens": 1,
+            "total_tokens": 371,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "42",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "two_tools",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "add",
+          "multiply"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_n96Hut90uIpCfLVVY9vZ1369",
+            "content": "42",
+            "status": "success"
+          },
+          {
+            "id": "call_01_Ad31dqvPGxZbwnYtjrTc1663",
+            "content": "42",
+            "status": "success"
+          }
+        ],
+        "final": "Both results are in:\n\n- **17 + 25 = 42**\n- **6 × 7 = 42**\n\nInterestingly, both operations happen to yield the same value, 42."
+      },
+      "seconds": 2.4,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Use both requested tools. After results, output the two results."
+            },
+            {
+              "type": "human",
+              "text": "Call add for 17+25 and multiply for 6*7, then report both."
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 375,
+            "output_tokens": 102,
+            "total_tokens": 477,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "I'll call both tools now.",
+          "tool_calls": [
+            {
+              "name": "add",
+              "args": {
+                "a": 17,
+                "b": 25
+              },
+              "id": "call_00_n96Hut90uIpCfLVVY9vZ1369",
+              "type": "tool_call"
+            },
+            {
+              "name": "multiply",
+              "args": {
+                "a": 6,
+                "b": 7
+              },
+              "id": "call_01_Ad31dqvPGxZbwnYtjrTc1663",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Use both requested tools. After results, output the two results."
+            },
+            {
+              "type": "human",
+              "text": "Call add for 17+25 and multiply for 6*7, then report both."
+            },
+            {
+              "type": "ai",
+              "text": "I'll call both tools now."
+            },
+            {
+              "type": "tool",
+              "text": "42"
+            },
+            {
+              "type": "tool",
+              "text": "42"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 499,
+            "output_tokens": 39,
+            "total_tokens": 538,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "Both results are in:\n\n- **17 + 25 = 42**\n- **6 × 7 = 42**\n\nInterestingly, both operations happen to yield the same value, 42.",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "dependent_tool_rounds",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "lookup_secret",
+          "add"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_HAKLuzl527Y9XRKAk58D7282",
+            "content": "37",
+            "status": "success"
+          },
+          {
+            "id": "call_00_8TYAddqUcb7nElE69krX3082",
+            "content": "42",
+            "status": "success"
+          }
+        ],
+        "final": "42"
+      },
+      "seconds": 3.022,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Use lookup_secret first. Then use add to add 5 to the returned value. Never guess the lookup result. Answer only the final number."
+            },
+            {
+              "type": "human",
+              "text": "Look up alpha, then add 5."
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 373,
+            "output_tokens": 48,
+            "total_tokens": 421,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "I'll look up the value for alpha first.",
+          "tool_calls": [
+            {
+              "name": "lookup_secret",
+              "args": {
+                "label": "alpha"
+              },
+              "id": "call_00_HAKLuzl527Y9XRKAk58D7282",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Use lookup_secret first. Then use add to add 5 to the returned value. Never guess the lookup result. Answer only the final number."
+            },
+            {
+              "type": "human",
+              "text": "Look up alpha, then add 5."
+            },
+            {
+              "type": "ai",
+              "text": "I'll look up the value for alpha first."
+            },
+            {
+              "type": "tool",
+              "text": "37"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 434,
+            "output_tokens": 62,
+            "total_tokens": 496,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "Now I'll add 5 to the returned value.",
+          "tool_calls": [
+            {
+              "name": "add",
+              "args": {
+                "a": 37,
+                "b": 5
+              },
+              "id": "call_00_8TYAddqUcb7nElE69krX3082",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Use lookup_secret first. Then use add to add 5 to the returned value. Never guess the lookup result. Answer only the final number."
+            },
+            {
+              "type": "human",
+              "text": "Look up alpha, then add 5."
+            },
+            {
+              "type": "ai",
+              "text": "I'll look up the value for alpha first."
+            },
+            {
+              "type": "tool",
+              "text": "37"
+            },
+            {
+              "type": "ai",
+              "text": "Now I'll add 5 to the returned value."
+            },
+            {
+              "type": "tool",
+              "text": "42"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 509,
+            "output_tokens": 1,
+            "total_tokens": 510,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "42",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "single_tool_async",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "add"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_kXkideXAV9lcjJia5Fjy2600",
+            "content": "42",
+            "status": "success"
+          }
+        ],
+        "final": "42"
+      },
+      "seconds": 2.303,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Always use add, then answer only the number."
+            },
+            {
+              "type": "human",
+              "text": "Use add to calculate 19+23."
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 298,
+            "output_tokens": 52,
+            "total_tokens": 350,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "",
+          "tool_calls": [
+            {
+              "name": "add",
+              "args": {
+                "a": 19,
+                "b": 23
+              },
+              "id": "call_00_kXkideXAV9lcjJia5Fjy2600",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Always use add, then answer only the number."
+            },
+            {
+              "type": "human",
+              "text": "Use add to calculate 19+23."
+            },
+            {
+              "type": "ai",
+              "text": ""
+            },
+            {
+              "type": "tool",
+              "text": "42"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 363,
+            "output_tokens": 1,
+            "total_tokens": 364,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "42",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "tool_argument_error_recovery",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "checked_lookup",
+          "checked_lookup"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_HcwpADkyDgu0NeSdhdFi6641",
+            "content": "Error invoking tool 'checked_lookup' with kwargs {'label': 'invalid'} with error:\n label: Input should be 'valid'\n Please fix the error and try again.",
+            "status": "error"
+          },
+          {
+            "id": "call_00_KdbizVjtAsomuadB25cq9508",
+            "content": "RECOVERED",
+            "status": "success"
+          }
+        ],
+        "final": "Done. The sequence played out as expected:\n\n1. **First call** with `label: \"invalid\"` → rejected with a validation error: `label: Input should be 'valid'`.\n2. **Second call** with `label: \"valid\"` → succeeded.\n\n**Returned value: `RECOVERED`**"
+      },
+      "seconds": 4.293,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "For this validation test, deliberately request checked_lookup with label invalid first, even though the schema only permits valid. After the error ToolMessage, request label valid. Report the returned value."
+            },
+            {
+              "type": "human",
+              "text": "Run the lookup and recover from its error."
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 327,
+            "output_tokens": 50,
+            "total_tokens": 377,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "I'll start by deliberately calling with the invalid label as instructed.",
+          "tool_calls": [
+            {
+              "name": "checked_lookup",
+              "args": {
+                "label": "invalid"
+              },
+              "id": "call_00_HcwpADkyDgu0NeSdhdFi6641",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "For this validation test, deliberately request checked_lookup with label invalid first, even though the schema only permits valid. After the error ToolMessage, request label valid. Report the returned value."
+            },
+            {
+              "type": "human",
+              "text": "Run the lookup and recover from its error."
+            },
+            {
+              "type": "ai",
+              "text": "I'll start by deliberately calling with the invalid label as instructed."
+            },
+            {
+              "type": "tool",
+              "text": "Error invoking tool 'checked_lookup' with kwargs {'label': 'invalid'} with error:\n label: Input should be 'valid'\n Please fix the error and try again."
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 423,
+            "output_tokens": 55,
+            "total_tokens": 478,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "The error confirms only `valid` is accepted. Now retrying with the valid label.",
+          "tool_calls": [
+            {
+              "name": "checked_lookup",
+              "args": {
+                "label": "valid"
+              },
+              "id": "call_00_KdbizVjtAsomuadB25cq9508",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "For this validation test, deliberately request checked_lookup with label invalid first, even though the schema only permits valid. After the error ToolMessage, request label valid. Report the returned value."
+            },
+            {
+              "type": "human",
+              "text": "Run the lookup and recover from its error."
+            },
+            {
+              "type": "ai",
+              "text": "I'll start by deliberately calling with the invalid label as instructed."
+            },
+            {
+              "type": "tool",
+              "text": "Error invoking tool 'checked_lookup' with kwargs {'label': 'invalid'} with error:\n label: Input should be 'valid'\n Please fix the error and try again."
+            },
+            {
+              "type": "ai",
+              "text": "The error confirms only `valid` is accepted. Now retrying with the valid label."
+            },
+            {
+              "type": "tool",
+              "text": "RECOVERED"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 493,
+            "output_tokens": 68,
+            "total_tokens": 561,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "Done. The sequence played out as expected:\n\n1. **First call** with `label: \"invalid\"` → rejected with a validation error: `label: Input should be 'valid'`.\n2. **Second call** with `label: \"valid\"` → succeeded.\n\n**Returned value: `RECOVERED`**",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "tool_business_error_propagation",
+      "passed": true,
+      "detail": {
+        "expected_exception": "ValueError",
+        "message": "SG_SYNTHETIC_BUSINESS_ERROR"
+      },
+      "seconds": 1.188,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Always call fail_business with value 1."
+            },
+            {
+              "type": "human",
+              "text": "Call the tool."
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 280,
+            "output_tokens": 38,
+            "total_tokens": 318,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "",
+          "tool_calls": [
+            {
+              "name": "fail_business",
+              "args": {
+                "value": 1
+              },
+              "id": "call_00_HBDlIFoDR1WoxeP3z4dV9804",
+              "type": "tool_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "host_pipe",
+      "passed": true,
+      "detail": {
+        "stdout": "[A] SG_HOST_OK\n"
+      },
+      "seconds": 1.366,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "Reply exactly SG_HOST_OK."
+            },
+            {
+              "type": "human",
+              "text": "host test"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 13,
+            "output_tokens": 3,
+            "total_tokens": 16,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_HOST_OK",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "cli_environment_connection",
+      "passed": true,
+      "detail": {
+        "stdout": "[A] SG_CLI_OK\n",
+        "api_calls": 1
+      },
+      "seconds": 2.809,
+      "calls": []
+    }
+  ],
+  "scope": "Synthetic test data only. CLI child call excluded from in-process token totals. No MCP."
+}

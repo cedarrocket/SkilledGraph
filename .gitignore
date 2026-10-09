@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Local development and credential directories
+.agents/
+.codex/
+.aws/
+
+# Local connection credentials
+.env
+.env.*
+!.env.example
+deepseek_api.txt
+
+# Private discussion archives and unpublished Git backups
+.local-docs/
+.local-history/

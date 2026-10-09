@@ -1,0 +1,214 @@
+{
+  "date": "2026-10-09T03:18:13.160913+00:00",
+  "model": "deepseek:deepseek-chat",
+  "cases": [
+    {
+      "name": "12-evidence-assistant",
+      "calls": [
+        {
+          "task": "TASK: EVIDENCE_QA",
+          "usage": {
+            "input_tokens": 352,
+            "output_tokens": 92,
+            "total_tokens": 444,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [
+            "search_notes",
+            "search_notes"
+          ]
+        },
+        {
+          "task": "TASK: EVIDENCE_QA",
+          "usage": {
+            "input_tokens": 678,
+            "output_tokens": 159,
+            "total_tokens": 837,
+            "input_token_details": {
+              "cache_read": 384
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        }
+      ],
+      "passed": true,
+      "reply": "根据本地笔记，答案如下：\n\n**发布前检查**（[release.md]）\n- 必须通过自动测试\n- 必须由另一名维护者完成审查\n- 生产发布窗口为每周二 14:00 UTC\n- 紧急修复需要值班人员批准\n\n**回滚条件与做法**（[rollback.md]）\n- 触发条件：发布后错误率**连续五分钟超过 2%**\n- 回滚目标：最近一次稳定版本\n- 同时需保留事故日志并通知值班人员\n\n补充说明：笔记中没有提到其他检查项（如性能压测、灰度发布、数据库迁移校验等），也没有给出除错误率以外的回滚触发条件。如果你需要这些内容，目前本地资料里没有支持。"
+    },
+    {
+      "name": "13-csv-auditor",
+      "calls": [
+        {
+          "task": "TASK: CSV_AUDIT",
+          "usage": {
+            "input_tokens": 137,
+            "output_tokens": 112,
+            "total_tokens": 249,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        }
+      ],
+      "passed": true,
+      "reply": "共 5 行；可解析金额合计 30.50（尚未去重）。\n重复 ID：['A2']；金额非法行：[5]。\n建议：删除重复 ID A2 的多余记录，仅保留一条；修正第 5 行无效数据（如金额、日期或必填字段格式错误）；为第 6 行缺失的 customer 字段补全客户信息或标记为待补充；重新核对有效总额 30.50 是否已排除重复与无效记录"
+    },
+    {
+      "name": "14-email-assistant",
+      "calls": [
+        {
+          "task": "TASK: EMAIL_CLASSIFY",
+          "usage": {
+            "input_tokens": 73,
+            "output_tokens": 2,
+            "total_tokens": 75,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        },
+        {
+          "task": "TASK: EMAIL_DRAFT",
+          "usage": {
+            "input_tokens": 89,
+            "output_tokens": 180,
+            "total_tokens": 269,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        }
+      ],
+      "draft": "**主题：关于您反馈的重复收费问题（待核实）**\n\n尊敬的客户：\n\n您好，感谢您联系我们。\n\n我们已收到您关于重复收费并申请退款的反馈。为便于我们进一步核实，请您提供以下信息：\n\n1. 涉及的订单号（如有多个，请一并提供）；\n2. 重复收费的具体金额及扣款时间；\n3. 扣款账户或支付方式的相关信息（如后四位等，请勿提供完整卡号）。\n\n收到上述信息后，我们将对相关收费记录进行核实。需要说明的是，退款申请需经人工审核，我们无法在此阶段承诺退款结果或具体处理时限。核实与审核完成后，我们会尽快与您联系并告知后续处理情况。\n\n如有其他疑问，欢迎随时回复本邮件。\n\n顺祝商祺\n\n[发件人姓名]\n[部门/公司名称]\n[联系方式]",
+      "passed": true,
+      "reply": "已保存草稿：/tmp/tmpuvqbmh4w/draft-709bab2e-d6b1-4e2f-a66a-1bfeceb195d7.md。未发送邮件。"
+    },
+    {
+      "name": "15-parallel-code-review",
+      "calls": [
+        {
+          "task": "TASK: REVIEW_CORRECTNESS",
+          "usage": {
+            "input_tokens": 88,
+            "output_tokens": 577,
+            "total_tokens": 665,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        },
+        {
+          "task": "TASK: REVIEW_MAINTAINABILITY",
+          "usage": {
+            "input_tokens": 89,
+            "output_tokens": 704,
+            "total_tokens": 793,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        },
+        {
+          "task": "TASK: REVIEW_SECURITY",
+          "usage": {
+            "input_tokens": 83,
+            "output_tokens": 278,
+            "total_tokens": 361,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        },
+        {
+          "task": "TASK: REVIEW_REPORT",
+          "usage": {
+            "input_tokens": 1699,
+            "output_tokens": 1024,
+            "total_tokens": 2723,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        }
+      ],
+      "passed": true,
+      "reply": "# 综合审查报告与优先级列表\n\n## 一、审查范围与证据来源\n\n- 代码文件：包含 `average(values)` 与 `run_job(user_command)` 两个函数。\n- 静态检查（AST）：识别到 3 处调用点\n  - 第 5 行：`sum`、`len`\n  - 第 9 行：`os.system`\n- 说明：AST 仅证明存在调用，不证明漏洞成立；以下结论结合代码语义与调用上下文判断。\n\n---\n\n## 二、确定问题（有明确代码证据，可直接判定）\n\n### P0 — 命令注入 / 任意命令执行（安全，高危）\n- 证据：第 9 行 `return os.system(user_command)`\n- 判定依据：`os.system` 将字符串交给系统 shell 执行，`user_command` 未做任何校验、转义或白名单限制。若输入来自外部，可注入 `;`、`&&`、`|`、命令替换等。\n- 影响：任意命令执行、数据泄露、横向移动。\n- 修复建议：\n  - 避免 `os.system`；改用 `subprocess.run([...], shell=False)` 传参数列表。\n  - 对输入做严格白名单校验，禁止拼接 shell 字符串。\n  - 若确需 shell，明确信任边界并做转义（不推荐）。\n\n### P1 — `average` 空序列除零（正确性，中危）\n- 证据：第 5 行 `return sum(values) / len(values)`\n- 判定依据：`values` 为空时 `len(values) == 0`，必然触发 `ZeroDivisionError`。\n- 影响：调用方在空输入场景下崩溃。\n- 修复建议：显式处理空输入（抛带说明的 `ValueError` 或返回 `None`），并在 docstring 中声明契约。\n\n### P2 — `os.system` 返回值语义误用风险（正确性，中危）\n- 证据：第 9 行直接 `return os.system(...)`\n- 判定依据：`os.system` 返回的是 wait status（平台相关），不是命令退出码，也不是命令输出。\n- 影响：调用方若当作退出码或输出使用会出错。\n- 修复建议：改用 `subprocess.run` 并返回结构化结果（如 `returncode`、`stdout`、`stderr`）。\n\n### P3 — 接口契约与可维护性不足（可维护性，低危）\n- 证据：两个函数均无类型标注、无 docstring；`run_job` 命名与行为不符。\n- 影响：调用方易误用，测试困难。\n- 修复建议：补充类型标注与 docstring；`run_job` 重命名为 `run_shell_command` 或改为接收参数列表；将执行器隔离以便测试注入。\n\n---\n\n## 三、需要验证的疑点（依赖运行时/调用上下文，不能仅凭静态判定）\n\n### V1 — `user_command` 是否来自不可信输入\n- 依据：AST 只显示 `os.system` 被调用，无法判断数据来源。\n- 验证方式：追踪 `run_job` 的所有调用点，确认参数是否来自 HTTP 参数、表单、消息队列、配置文件等外部源。\n- 若确认外部可控 → P0 升级为“确定的高危漏洞”；若仅内部常量 → 风险降级但仍建议整改。\n\n### V2 — `average` 的输入类型是否可能为生成器/迭代器\n- 依据：`sum(values)` 会耗尽迭代器，随后 `len(values)` 可能抛 `TypeError`。\n- 验证方式：检查调用方传入的是 list/tuple 还是生成器。\n- 若为生成器 → 新增一条确定问题（`TypeError`）。\n\n### V3 — `average` 元素类型是否保证为数值\n- 依据：`sum` 对非数值元素会抛 `TypeError`。\n- 验证方式：检查调用方数据来源与类型约束。\n- 若无法保证 → 需补充类型校验或错误封装。\n\n### V4 — 平台与运行环境\n- 依据：`os.system` 返回值语义在 Unix 与 Windows 上不同。\n- 验证方式：确认部署平台，决定退出码解析方式。\n\n---\n\n## 四、优先级汇总\n\n| 优先级 | 编号 | 问题 | 类别 | 状态 |\n|--------|------|------|------|------|\n| P0 | — | `os.system(user_command)` 命令注入 | 安全 | 确定（严重性取决于 V1） |\n| P1 | — | `average` 空序列除零 | 正确"
+    },
+    {
+      "name": "16-batch-digest",
+      "calls": [
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 83,
+            "output_tokens": 142,
+            "total_tokens": 225,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 81,
+            "output_tokens": 57,
+            "total_tokens": 138,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 81,
+            "output_tokens": 100,
+            "total_tokens": 181,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        },
+        {
+          "task": "TASK: DIGEST_REPORT",
+          "usage": {
+            "input_tokens": 444,
+            "output_tokens": 302,
+            "total_tokens": 746,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        }
+      ],
+      "passed": true,
+      "reply": "# 总览\n\n- **文档1（发布会议）**：确定由 Alice 负责周二发布；发布前需完成自动测试；Bob 周一检查回滚预案。\n- **文档2（支持审查）**：上周出现两次重复收费报告；需核实订单记录，负责人为 Carol，完成日期未定。\n- **文档3（工程评审）**：需为 average 的空输入行为增加测试；评审日期为周五，负责人未知。\n\n# 行动项\n\n| 行动项 | 负责人 | 日期 | 来源 |\n|---|---|---|---|\n| 负责发布 | Alice | 周二 | 文档1 |\n| 完成自动测试 | 未知 | 未知（仅注明“发布前”） | 文档1 |\n| 检查回滚预案 | Bob | 周一 | 文档1 |\n| 核实订单记录 | Carol | 未知（完成日期未定） | 文档2 |\n| 为 average 的空输入行为增加测试 | 未知 | 未知（评审日期为周五） | 文档3 |\n\n# 未解决问题\n\n- **文档1**：自动测试的负责人未知；自动测试完成日期未知，仅注明需在“发布前”完成。\n- **文档2**：核实订单记录的完成日期未定（未知）。\n- **文档3**：为 average 空输入行为增加测试的负责人未知；该待办的完成日期未知（文档仅给出评审日期为周五）。"
+    }
+  ]
+}

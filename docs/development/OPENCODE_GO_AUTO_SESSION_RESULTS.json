@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-09T03:07:54.123688+00:00",
+  "provider": "opencode-go",
+  "model": "glm-5.3-flash",
+  "base_url": "https://opencode.ai/zen/go/v1",
+  "cases": [
+    {
+      "name": "coding_prompt",
+      "passed": true,
+      "reply": "def add(a, b):\n    \"\"\"Return the sum of a and b.\"\"\"\n    return a + b",
+      "usage": {
+        "input_tokens": 44,
+        "output_tokens": 123,
+        "total_tokens": 167,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0,
+          "cache_creation": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      },
+      "session": "sgraph-harness-agent-fe3c9bcc-b1b6-4974-b8f6-975723b912ee"
+    },
+    {
+      "name": "tool_calling",
+      "passed": true,
+      "reply": "I inspected the function and found the bug: `add` was subtracting instead of adding. Here's the corrected implementation:\n\n```python\ndef add(a, b):\n    return a + b\n```",
+      "tool_calls": 1,
+      "session": "sgraph-harness-agent-b3268edf-cfb1-4680-a907-de33b16d6a6a",
+      "usage": [
+        {
+          "input_tokens": 195,
+          "output_tokens": 7,
+          "total_tokens": 202,
+          "input_token_details": {
+            "audio": 0,
+            "cache_read": 0,
+            "cache_creation": 0
+          },
+          "output_token_details": {
+            "audio": 0,
+            "reasoning": 0
+          }
+        },
+        {
+          "input_tokens": 218,
+          "output_tokens": 56,
+          "total_tokens": 274,
+          "input_token_details": {
+            "audio": 0,
+            "cache_read": 0,
+            "cache_creation": 0
+          },
+          "output_token_details": {
+            "audio": 0,
+            "reasoning": 0
+          }
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "path": "/zen/go/v1/chat/completions",
+      "user_agent": "sgraph-harness-agent/0.1.0.dev0",
+      "session": "sgraph-harness-agent-fe3c9bcc-b1b6-4974-b8f6-975723b912ee"
+    },
+    {
+      "path": "/zen/go/v1/chat/completions",
+      "user_agent": "sgraph-harness-agent/0.1.0.dev0",
+      "session": "sgraph-harness-agent-b3268edf-cfb1-4680-a907-de33b16d6a6a"
+    },
+    {
+      "path": "/zen/go/v1/chat/completions",
+      "user_agent": "sgraph-harness-agent/0.1.0.dev0",
+      "session": "sgraph-harness-agent-b3268edf-cfb1-4680-a907-de33b16d6a6a"
+    }
+  ]
+}

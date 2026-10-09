@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-09T10:36:56.923572+00:00",
+  "model": "deepseek:deepseek-chat",
+  "calls": [
+    {
+      "task": "TASK: MEMORY_AGENT",
+      "usage": {
+        "input_tokens": 1202,
+        "output_tokens": 28,
+        "total_tokens": 1230,
+        "input_token_details": {
+          "cache_read": 0
+        },
+        "output_token_details": {}
+      },
+      "tool_names": [],
+      "finish_reason": "stop"
+    },
+    {
+      "task": "TASK: MEMORY_COMPACT",
+      "usage": {
+        "input_tokens": 997,
+        "output_tokens": 45,
+        "total_tokens": 1042,
+        "input_token_details": {
+          "cache_read": 0
+        },
+        "output_token_details": {}
+      },
+      "tool_names": [],
+      "finish_reason": "stop"
+    },
+    {
+      "task": "TASK: MEMORY_AGENT",
+      "usage": {
+        "input_tokens": 407,
+        "output_tokens": 68,
+        "total_tokens": 475,
+        "input_token_details": {
+          "cache_read": 128
+        },
+        "output_token_details": {}
+      },
+      "tool_names": [
+        "calculate"
+      ],
+      "finish_reason": "tool_calls"
+    },
+    {
+      "task": "TASK: MEMORY_AGENT",
+      "usage": {
+        "input_tokens": 490,
+        "output_tokens": 11,
+        "total_tokens": 501,
+        "input_token_details": {
+          "cache_read": 256
+        },
+        "output_token_details": {}
+      },
+      "tool_names": [],
+      "finish_reason": "stop"
+    },
+    {
+      "task": "TASK: MEMORY_AGENT",
+      "usage": {
+        "input_tokens": 514,
+        "output_tokens": 44,
+        "total_tokens": 558,
+        "input_token_details": {
+          "cache_read": 256
+        },
+        "output_token_details": {}
+      },
+      "tool_names": [],
+      "finish_reason": "stop"
+    }
+  ],
+  "turns": [
+    {
+      "reply": "你好，林！很高兴认识你。我会用中文和你交流。\n\n有什么我可以帮你的吗？比如需要计算什么，随时告诉我。",
+      "message_count": 2,
+      "compressions": 0
+    },
+    {
+      "reply": "17 加 25 等于 **42**。",
+      "message_count": 5,
+      "compressions": 1
+    },
+    {
+      "reply": "根据历史摘要：\n\n- 你的名字：**林**\n- 你偏好的语言：**中文**\n\n（这些信息来自历史摘要，可能有遗漏或不准确之处，如有出入请以你实际的情况为准。）",
+      "message_count": 7,
+      "compressions": 1
+    }
+  ],
+  "passed": true
+}

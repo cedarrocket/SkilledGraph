@@ -1,0 +1,97 @@
+{
+  "started_utc": "2026-10-09T00:33:26.728858+00:00",
+  "requested_model": "deepseek:deepseek-chat",
+  "served_models": [
+    "deepseek-flash"
+  ],
+  "passed": 1,
+  "total": 1,
+  "api_calls_in_process": 2,
+  "tokens_in_process": {
+    "input_tokens": 43,
+    "output_tokens": 12,
+    "total_tokens": 55
+  },
+  "results": [
+    {
+      "case": "chain_history",
+      "passed": true,
+      "detail": {
+        "replies": [
+          "蓝鲸",
+          "前一条助手回复提到的动物是蓝鲸。"
+        ],
+        "second_input": [
+          {
+            "type": "system",
+            "text": "用一句话说明前一条助手回复提到的动物，必须包含这个动物的名称。"
+          },
+          {
+            "type": "human",
+            "text": "开始"
+          },
+          {
+            "type": "ai",
+            "text": "蓝鲸"
+          }
+        ]
+      },
+      "seconds": 2.883,
+      "calls": [
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "回答“蓝鲸”，不要加其他文字。"
+            },
+            {
+              "type": "human",
+              "text": "开始"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 16,
+            "output_tokens": 2,
+            "total_tokens": 18,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "蓝鲸",
+          "tool_calls": []
+        },
+        {
+          "input_messages": [
+            {
+              "type": "system",
+              "text": "用一句话说明前一条助手回复提到的动物，必须包含这个动物的名称。"
+            },
+            {
+              "type": "human",
+              "text": "开始"
+            },
+            {
+              "type": "ai",
+              "text": "蓝鲸"
+            }
+          ],
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 27,
+            "output_tokens": 10,
+            "total_tokens": 37,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "前一条助手回复提到的动物是蓝鲸。",
+          "tool_calls": []
+        }
+      ]
+    }
+  ],
+  "scope": "Synthetic test data only. CLI child call excluded from in-process token totals. No MCP."
+}

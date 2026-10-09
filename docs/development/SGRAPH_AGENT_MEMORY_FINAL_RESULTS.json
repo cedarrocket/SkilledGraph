@@ -1,0 +1,120 @@
+{
+  "date": "2026-10-09T12:37:39.997474+00:00",
+  "model": "deepseek-flash",
+  "api": "responses",
+  "reasoning_effort": "none",
+  "cases": [
+    {
+      "name": "memory",
+      "calls": [
+        {
+          "task": "你是 SkilledGraph 的实用终端助手。根据用户目标调用工具，完成工作后明确说明结果与验证情况。",
+          "usage": {
+            "input_tokens": 2859,
+            "output_tokens": 30,
+            "total_tokens": 2889,
+            "input_token_details": {
+              "cache_read": 2688
+            },
+            "output_token_details": {
+              "reasoning": 0
+            }
+          },
+          "tool_names": [],
+          "finish_reason": null
+        },
+        {
+          "task": "TASK: CONTEXT_COMPACT",
+          "usage": {
+            "input_tokens": 2163,
+            "output_tokens": 105,
+            "total_tokens": 2268,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {
+              "reasoning": 0
+            }
+          },
+          "tool_names": [],
+          "finish_reason": null
+        },
+        {
+          "task": "你是 SkilledGraph 的实用终端助手。根据用户目标调用工具，完成工作后明确说明结果与验证情况。",
+          "usage": {
+            "input_tokens": 1008,
+            "output_tokens": 38,
+            "total_tokens": 1046,
+            "input_token_details": {
+              "cache_read": 640
+            },
+            "output_token_details": {
+              "reasoning": 0
+            }
+          },
+          "tool_names": [
+            "python"
+          ],
+          "finish_reason": null
+        },
+        {
+          "task": "你是 SkilledGraph 的实用终端助手。根据用户目标调用工具，完成工作后明确说明结果与验证情况。",
+          "usage": {
+            "input_tokens": 1059,
+            "output_tokens": 20,
+            "total_tokens": 1079,
+            "input_token_details": {
+              "cache_read": 896
+            },
+            "output_token_details": {
+              "reasoning": 0
+            }
+          },
+          "tool_names": [],
+          "finish_reason": null
+        },
+        {
+          "task": "你是 SkilledGraph 的实用终端助手。根据用户目标调用工具，完成工作后明确说明结果与验证情况。",
+          "usage": {
+            "input_tokens": 1091,
+            "output_tokens": 14,
+            "total_tokens": 1105,
+            "input_token_details": {
+              "cache_read": 896
+            },
+            "output_token_details": {
+              "reasoning": 0
+            }
+          },
+          "tool_names": [],
+          "finish_reason": null
+        }
+      ],
+      "turns": [
+        {
+          "reply": "你好，林！已记住：你叫林，偏好中文回复。其余重复内容已忽略，不会保留。\n\n有什么需要我帮忙的？",
+          "compressions": 0
+        },
+        {
+          "reply": "结果：**42**（已用 python 工具计算 17+25 = 42）。",
+          "compressions": 1
+        },
+        {
+          "reply": "你的名字是**林**，语言偏好是**中文**。",
+          "compressions": 1
+        }
+      ],
+      "passed": true,
+      "reply": "你的名字是**林**，语言偏好是**中文**。",
+      "audit": [
+        {
+          "tool": "python",
+          "call_id": "call_00_JxnyRLmhmxK5b1iUIY3z7344",
+          "approved": true,
+          "reason": "Bounded read-only or sandbox operation"
+        }
+      ],
+      "compressions": 1
+    }
+  ]
+}

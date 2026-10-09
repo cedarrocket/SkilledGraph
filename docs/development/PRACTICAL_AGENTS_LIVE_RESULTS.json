@@ -1,0 +1,249 @@
+{
+  "date": "2026-10-09T03:25:52.417512+00:00",
+  "model": "deepseek:deepseek-chat",
+  "acceptance_mode": "latest case results across four recorded rounds; passed checks validate workflow contracts, not general factual accuracy",
+  "recorded_rounds": {
+    "INITIAL": {
+      "calls": 13,
+      "tokens": 7706
+    },
+    "FOLLOWUP": {
+      "calls": 9,
+      "tokens": 2157
+    },
+    "EVIDENCE": {
+      "calls": 4,
+      "tokens": 936
+    },
+    "FINAL_DIGEST": {
+      "calls": 4,
+      "tokens": 986
+    }
+  },
+  "actual_calls": 30,
+  "actual_tokens": 11785,
+  "cases": [
+    {
+      "name": "12-evidence-assistant",
+      "calls": [
+        {
+          "task": "TASK: EVIDENCE_QA",
+          "usage": {
+            "input_tokens": 352,
+            "output_tokens": 92,
+            "total_tokens": 444,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [
+            "search_notes",
+            "search_notes"
+          ]
+        },
+        {
+          "task": "TASK: EVIDENCE_QA",
+          "usage": {
+            "input_tokens": 678,
+            "output_tokens": 159,
+            "total_tokens": 837,
+            "input_token_details": {
+              "cache_read": 384
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        }
+      ],
+      "passed": true,
+      "reply": "根据本地笔记，答案如下：\n\n**发布前检查**（[release.md]）\n- 必须通过自动测试\n- 必须由另一名维护者完成审查\n- 生产发布窗口为每周二 14:00 UTC\n- 紧急修复需要值班人员批准\n\n**回滚条件与做法**（[rollback.md]）\n- 触发条件：发布后错误率**连续五分钟超过 2%**\n- 回滚目标：最近一次稳定版本\n- 同时需保留事故日志并通知值班人员\n\n补充说明：笔记中没有提到其他检查项（如性能压测、灰度发布、数据库迁移校验等），也没有给出除错误率以外的回滚触发条件。如果你需要这些内容，目前本地资料里没有支持。",
+      "acceptance_round": "initial"
+    },
+    {
+      "name": "13-csv-auditor",
+      "calls": [
+        {
+          "task": "TASK: CSV_AUDIT",
+          "usage": {
+            "input_tokens": 174,
+            "output_tokens": 100,
+            "total_tokens": 274,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        }
+      ],
+      "passed": true,
+      "reply": "共 5 行；可解析金额合计 30.50（尚未去重）。\n重复 ID：['A2']；金额非法行：[5]。\n建议：核实重复 ID A2 的两条记录是否属于同一笔交易，确认前不要删除任何记录。；检查第 5 行 amount 非法值，修正为有效金额后重新计算合计。；合计 30.50 尚未去重，去重后需重新汇总。",
+      "acceptance_round": "followup"
+    },
+    {
+      "name": "14-email-assistant",
+      "calls": [
+        {
+          "task": "TASK: EMAIL_CLASSIFY",
+          "usage": {
+            "input_tokens": 73,
+            "output_tokens": 2,
+            "total_tokens": 75,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        },
+        {
+          "task": "TASK: EMAIL_DRAFT",
+          "usage": {
+            "input_tokens": 89,
+            "output_tokens": 180,
+            "total_tokens": 269,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": []
+        }
+      ],
+      "draft": "**主题：关于您反馈的重复收费问题（待核实）**\n\n尊敬的客户：\n\n您好，感谢您联系我们。\n\n我们已收到您关于重复收费并申请退款的反馈。为便于我们进一步核实，请您提供以下信息：\n\n1. 涉及的订单号（如有多个，请一并提供）；\n2. 重复收费的具体金额及扣款时间；\n3. 扣款账户或支付方式的相关信息（如后四位等，请勿提供完整卡号）。\n\n收到上述信息后，我们将对相关收费记录进行核实。需要说明的是，退款申请需经人工审核，我们无法在此阶段承诺退款结果或具体处理时限。核实与审核完成后，我们会尽快与您联系并告知后续处理情况。\n\n如有其他疑问，欢迎随时回复本邮件。\n\n顺祝商祺\n\n[发件人姓名]\n[部门/公司名称]\n[联系方式]",
+      "passed": true,
+      "reply": "已保存草稿：/tmp/tmpuvqbmh4w/draft-709bab2e-d6b1-4e2f-a66a-1bfeceb195d7.md。未发送邮件。",
+      "acceptance_round": "initial"
+    },
+    {
+      "name": "15-parallel-code-review",
+      "calls": [
+        {
+          "task": "TASK: REVIEW_CORRECTNESS",
+          "usage": {
+            "input_tokens": 101,
+            "output_tokens": 51,
+            "total_tokens": 152,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: REVIEW_MAINTAINABILITY",
+          "usage": {
+            "input_tokens": 97,
+            "output_tokens": 94,
+            "total_tokens": 191,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: REVIEW_SECURITY",
+          "usage": {
+            "input_tokens": 98,
+            "output_tokens": 84,
+            "total_tokens": 182,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: REVIEW_REPORT",
+          "usage": {
+            "input_tokens": 382,
+            "output_tokens": 254,
+            "total_tokens": 636,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        }
+      ],
+      "passed": true,
+      "reply": "## 优先级列表\n\n**P0 确定问题**\n- 命令注入：`run_job` 第9行 `os.system(user_command)`。AST 确认调用点，但漏洞成立取决于 `user_command` 是否外部可控——需验证调用方。若可控，可执行任意命令。修复：改用 `subprocess.run([...], shell=False)`，或严格白名单校验。\n\n**P1 确定问题**\n- `average([])` 第5行 `sum/len` 除零，必现 ZeroDivisionError。修复：空列表显式抛 `ValueError` 或返回 `None`。\n\n**P2 疑点（需验证）**\n- `run_job` 返回值语义：`os.system` 仅返回退出码，调用方若期望命令输出会静默出错。需查调用方。\n- `user_command` 来源未知，是判定 P0 严重度的关键，AST 无法证明。\n\n**P3 改进**\n- 补类型注解；`run_job` 命名与职责不清，建议 `run_shell_command` 并返回结构化结果。\n\n注：静态结果仅证明调用存在，不证明漏洞成立。",
+      "acceptance_round": "followup"
+    },
+    {
+      "name": "16-batch-digest",
+      "calls": [
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 97,
+            "output_tokens": 48,
+            "total_tokens": 145,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 95,
+            "output_tokens": 36,
+            "total_tokens": 131,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_WORKER",
+          "usage": {
+            "input_tokens": 95,
+            "output_tokens": 30,
+            "total_tokens": 125,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        },
+        {
+          "task": "TASK: DIGEST_REPORT",
+          "usage": {
+            "input_tokens": 376,
+            "output_tokens": 209,
+            "total_tokens": 585,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "tool_names": [],
+          "finish_reason": "stop"
+        }
+      ],
+      "passed": true,
+      "reply": "**总览**\n- 发布安排：Alice 周二发布，发布前完成自动测试；Bob 周一检查回滚预案（文档1）。\n- 支持审查：上周两次重复收费报告，Carol 核实订单记录，完成日期未定（文档2）。\n- 工程评审：为 average 空输入行为增加测试，负责人未定（文档3）。\n\n**待办**\n- 完成自动测试（文档1）。\n- 检查回滚预案（文档1）。\n- 核实订单记录（文档2）。\n- 准备 average 空输入行为测试（文档3）。\n\n**未解决问题**\n- 重复收费核实完成日期未知（文档2）。\n- average 测试负责人未知（文档3）。\n\n**原文依据**\n- “Alice 负责周二发布，发布前需要完成自动测试。Bob 周一检查回滚预案。”（文档1）\n- “Carol 负责核实订单记录，完成日期未定。”（文档2）\n- “负责人未定，评审日期为周五。”（文档3）",
+      "acceptance_round": "final_digest"
+    }
+  ]
+}

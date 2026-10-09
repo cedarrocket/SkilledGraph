@@ -1,0 +1,8 @@
+{
+  "api": "responses",
+  "model": "deepseek-flash",
+  "returncode": 0,
+  "stdout": "已用 python 工具计算完成。\n\n- 表达式：`sum(range(100))`\n- 结果：**4950**\n\n验证：`range(100)` 为 0…99，共 100 个数，等差数列求和 100×99/2 = 4950，与工具输出一致。\n",
+  "stderr": "[history≈1095 tokens, compacted=0, calls=2]\n",
+  "passed": true
+}

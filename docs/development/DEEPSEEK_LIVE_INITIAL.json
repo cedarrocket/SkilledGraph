@@ -1,0 +1,599 @@
+{
+  "started_utc": "2026-10-09T00:31:33.260919+00:00",
+  "requested_model": "deepseek:deepseek-chat",
+  "served_models": [
+    "deepseek-flash"
+  ],
+  "passed": 12,
+  "total": 14,
+  "api_calls_in_process": 23,
+  "tokens_in_process": {
+    "input_tokens": 4079,
+    "output_tokens": 458,
+    "total_tokens": 4537
+  },
+  "results": [
+    {
+      "case": "ordinary_prompt",
+      "passed": true,
+      "detail": {
+        "reply": "SG_LIVE_OK"
+      },
+      "seconds": 1.107,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 13,
+            "output_tokens": 4,
+            "total_tokens": 17,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_LIVE_OK",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "chain_history",
+      "passed": false,
+      "error": "AssertionError: History not followed",
+      "seconds": 1.974,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 15,
+            "output_tokens": 12,
+            "total_tokens": 27,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_HISTORY_<answer>731</answer>",
+          "tool_calls": []
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 32,
+            "output_tokens": 7,
+            "total_tokens": 39,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "<answer>731</answer>",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "routing_list_yes",
+      "passed": true,
+      "detail": {
+        "route": "yes",
+        "reply": "SG_YES"
+      },
+      "seconds": 2.041,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 1,
+            "total_tokens": 21,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "yes",
+          "tool_calls": []
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 16,
+            "output_tokens": 3,
+            "total_tokens": 19,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_YES",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "routing_list_no",
+      "passed": true,
+      "detail": {
+        "route": "no",
+        "reply": "SG_NO"
+      },
+      "seconds": 1.977,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 1,
+            "total_tokens": 21,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "no",
+          "tool_calls": []
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 15,
+            "output_tokens": 2,
+            "total_tokens": 17,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_NO",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "routing_table_yes",
+      "passed": true,
+      "detail": {
+        "route": "yes",
+        "reply": "SG_YES"
+      },
+      "seconds": 1.996,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 1,
+            "total_tokens": 21,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "yes",
+          "tool_calls": []
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 16,
+            "output_tokens": 3,
+            "total_tokens": 19,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_YES",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "routing_table_no",
+      "passed": true,
+      "detail": {
+        "route": "no",
+        "reply": "SG_NO"
+      },
+      "seconds": 1.678,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 20,
+            "output_tokens": 1,
+            "total_tokens": 21,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "no",
+          "tool_calls": []
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 15,
+            "output_tokens": 2,
+            "total_tokens": 17,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_NO",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "pyfunction_material",
+      "passed": true,
+      "detail": {
+        "reply": "SG_MATERIAL_842"
+      },
+      "seconds": 0.995,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 32,
+            "output_tokens": 6,
+            "total_tokens": 38,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_MATERIAL_842",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "single_tool_sync",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "add"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_klkj0I3XIzTbipvAQjRd5176",
+            "content": "42",
+            "status": "success"
+          }
+        ],
+        "final": "42"
+      },
+      "seconds": 1.946,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 305,
+            "output_tokens": 52,
+            "total_tokens": 357,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "",
+          "tool_calls": [
+            {
+              "name": "add",
+              "args": {
+                "a": 17,
+                "b": 25
+              },
+              "id": "call_00_klkj0I3XIzTbipvAQjRd5176",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 370,
+            "output_tokens": 1,
+            "total_tokens": 371,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "42",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "two_tools",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "add",
+          "multiply"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_BLVbELAAgY7ztuxFSq9J3705",
+            "content": "42",
+            "status": "success"
+          },
+          {
+            "id": "call_01_Yb8RfvePsWqt9cDlD13C0001",
+            "content": "42",
+            "status": "success"
+          }
+        ],
+        "final": "Both results are in:\n\n- **17 + 25 = 42**\n- **6 × 7 = 42**\n\nInterestingly, both operations happen to yield the same value, 42."
+      },
+      "seconds": 2.222,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 375,
+            "output_tokens": 102,
+            "total_tokens": 477,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "I'll call both tools now.",
+          "tool_calls": [
+            {
+              "name": "add",
+              "args": {
+                "a": 17,
+                "b": 25
+              },
+              "id": "call_00_BLVbELAAgY7ztuxFSq9J3705",
+              "type": "tool_call"
+            },
+            {
+              "name": "multiply",
+              "args": {
+                "a": 6,
+                "b": 7
+              },
+              "id": "call_01_Yb8RfvePsWqt9cDlD13C0001",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 499,
+            "output_tokens": 39,
+            "total_tokens": 538,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "Both results are in:\n\n- **17 + 25 = 42**\n- **6 × 7 = 42**\n\nInterestingly, both operations happen to yield the same value, 42.",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "dependent_tool_rounds",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "lookup_secret",
+          "add"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_SvbEHgWpLMb4pHFpnCYo3366",
+            "content": "37",
+            "status": "success"
+          },
+          {
+            "id": "call_00_yXMjBO0QevHn5H7FUD5Q3754",
+            "content": "42",
+            "status": "success"
+          }
+        ],
+        "final": "42"
+      },
+      "seconds": 3.104,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 373,
+            "output_tokens": 48,
+            "total_tokens": 421,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "I'll look up the value for alpha first.",
+          "tool_calls": [
+            {
+              "name": "lookup_secret",
+              "args": {
+                "label": "alpha"
+              },
+              "id": "call_00_SvbEHgWpLMb4pHFpnCYo3366",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 434,
+            "output_tokens": 62,
+            "total_tokens": 496,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "Now I'll add 5 to the returned value.",
+          "tool_calls": [
+            {
+              "name": "add",
+              "args": {
+                "a": 37,
+                "b": 5
+              },
+              "id": "call_00_yXMjBO0QevHn5H7FUD5Q3754",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 509,
+            "output_tokens": 1,
+            "total_tokens": 510,
+            "input_token_details": {
+              "cache_read": 256
+            },
+            "output_token_details": {}
+          },
+          "text": "42",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "single_tool_async",
+      "passed": true,
+      "detail": {
+        "called_tools": [
+          "add"
+        ],
+        "tool_results": [
+          {
+            "id": "call_00_I4zTT78HQzJ7wFBuXIDU1176",
+            "content": "42",
+            "status": "success"
+          }
+        ],
+        "final": "42"
+      },
+      "seconds": 2.01,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 298,
+            "output_tokens": 52,
+            "total_tokens": 350,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "",
+          "tool_calls": [
+            {
+              "name": "add",
+              "args": {
+                "a": 19,
+                "b": 23
+              },
+              "id": "call_00_I4zTT78HQzJ7wFBuXIDU1176",
+              "type": "tool_call"
+            }
+          ]
+        },
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 363,
+            "output_tokens": 1,
+            "total_tokens": 364,
+            "input_token_details": {
+              "cache_read": 128
+            },
+            "output_token_details": {}
+          },
+          "text": "42",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "tool_error_recovery",
+      "passed": false,
+      "error": "ValueError: Try label valid",
+      "seconds": 1.089,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 306,
+            "output_tokens": 54,
+            "total_tokens": 360,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "I'll start by calling `checked_lookup` with the invalid label as instructed.",
+          "tool_calls": [
+            {
+              "name": "checked_lookup",
+              "args": {
+                "label": "invalid"
+              },
+              "id": "call_00_ELu2VbxumfBAk541XEYq9201",
+              "type": "tool_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "host_pipe",
+      "passed": true,
+      "detail": {
+        "stdout": "[A] SG_HOST_OK\n"
+      },
+      "seconds": 0.986,
+      "calls": [
+        {
+          "model": "deepseek-flash",
+          "usage": {
+            "input_tokens": 13,
+            "output_tokens": 3,
+            "total_tokens": 16,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "text": "SG_HOST_OK",
+          "tool_calls": []
+        }
+      ]
+    },
+    {
+      "case": "cli_environment_connection",
+      "passed": true,
+      "detail": {
+        "stdout": "[A] SG_CLI_OK\n",
+        "api_calls": 1
+      },
+      "seconds": 2.685,
+      "calls": []
+    }
+  ],
+  "scope": "Synthetic test data only. CLI child call excluded from in-process token totals. No MCP."
+}

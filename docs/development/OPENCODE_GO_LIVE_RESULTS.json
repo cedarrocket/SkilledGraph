@@ -1,0 +1,81 @@
+{
+  "provider": "opencode-go",
+  "model": "glm-5.3-flash",
+  "base_url": "https://opencode.ai/zen/go/v1",
+  "cases": [
+    {
+      "name": "coding_prompt",
+      "passed": true,
+      "reply": "def add(a, b):\n    return a + b",
+      "usage": {
+        "input_tokens": 44,
+        "output_tokens": 135,
+        "total_tokens": 179,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0,
+          "cache_creation": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      },
+      "session": "skilledgraph-cbdcf822-3489-4d00-be50-0a534b2714ee"
+    },
+    {
+      "name": "tool_calling",
+      "passed": true,
+      "reply": "The inspected function has a bug — it subtracts instead of adding. Here's the corrected implementation:\n\n```python\ndef add(a, b):\n    return a + b\n```",
+      "tool_calls": 1,
+      "session": "skilledgraph-c8379c75-76a7-4e71-b95d-c35a830bf1d3",
+      "usage": [
+        {
+          "input_tokens": 195,
+          "output_tokens": 31,
+          "total_tokens": 226,
+          "input_token_details": {
+            "audio": 0,
+            "cache_read": 0,
+            "cache_creation": 0
+          },
+          "output_token_details": {
+            "audio": 0,
+            "reasoning": 0
+          }
+        },
+        {
+          "input_tokens": 218,
+          "output_tokens": 63,
+          "total_tokens": 281,
+          "input_token_details": {
+            "audio": 0,
+            "cache_read": 0,
+            "cache_creation": 0
+          },
+          "output_token_details": {
+            "audio": 0,
+            "reasoning": 0
+          }
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "path": "/zen/go/v1/chat/completions",
+      "user_agent": "skilledgraph/0.1.0.dev0",
+      "session": "skilledgraph-cbdcf822-3489-4d00-be50-0a534b2714ee"
+    },
+    {
+      "path": "/zen/go/v1/chat/completions",
+      "user_agent": "skilledgraph/0.1.0.dev0",
+      "session": "skilledgraph-c8379c75-76a7-4e71-b95d-c35a830bf1d3"
+    },
+    {
+      "path": "/zen/go/v1/chat/completions",
+      "user_agent": "skilledgraph/0.1.0.dev0",
+      "session": "skilledgraph-c8379c75-76a7-4e71-b95d-c35a830bf1d3"
+    }
+  ]
+}

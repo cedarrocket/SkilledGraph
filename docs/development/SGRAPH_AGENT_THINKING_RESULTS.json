@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-09T12:18:53.762764+00:00",
+  "model": "deepseek-flash",
+  "api": "responses",
+  "reasoning_effort": "low",
+  "cases": [
+    {
+      "name": "read_monty",
+      "calls": [
+        {
+          "task": "你是 SkilledGraph 的实用终端助手。根据用户目标调用工具，完成工作后明确说明结果与验证情况。",
+          "usage": {
+            "input_tokens": 935,
+            "output_tokens": 118,
+            "total_tokens": 1053,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {
+              "reasoning": 48
+            }
+          },
+          "tool_names": [
+            "read_file",
+            "python"
+          ],
+          "finish_reason": null
+        },
+        {
+          "task": "你是 SkilledGraph 的实用终端助手。根据用户目标调用工具，完成工作后明确说明结果与验证情况。",
+          "usage": {
+            "input_tokens": 1110,
+            "output_tokens": 163,
+            "total_tokens": 1273,
+            "input_token_details": {
+              "cache_read": 896
+            },
+            "output_token_details": {
+              "reasoning": 6
+            }
+          },
+          "tool_names": [],
+          "finish_reason": null
+        }
+      ],
+      "passed": true,
+      "reply": "两个工具都已成功调用，结果如下：\n\n| 步骤 | 工具 | 结果 |\n|---|---|---|\n| 读取 notes.txt | `read_file` | 2 行文本：`project alpha` / `release requires regression tests` |\n| 计算总和 | `python` | `sum(range(10))` = **45** |\n\n**报告：**\n- 项目名：**alpha**（来自 notes.txt 第 1 行 \"project alpha\"）\n- 总和：**45**\n\n验证情况：notes.txt 共 2 行、未截断；总和 45 与 0+1+…+9 = 45 一致。附带信息：第 2 行提示发布前需要回归测试。",
+      "audit": [
+        {
+          "tool": "read_file",
+          "call_id": "call_00_E61HJzbzpYjEh0J0liga6100",
+          "approved": true,
+          "reason": "Bounded read-only or sandbox operation"
+        },
+        {
+          "tool": "python",
+          "call_id": "call_01_iUcfnWL34lzrUTfaU2KG0501",
+          "approved": true,
+          "reason": "Bounded read-only or sandbox operation"
+        }
+      ],
+      "compressions": 0
+    }
+  ]
+}
