@@ -30,3 +30,9 @@ SkilledGraph 是面向个人脚本的 Markdown DSL：用几行文本描述 LLM �
 ## 真实终端 agent
 
 [sgraph_agent](sgraph_agent/README.md)提供持续 ReAct 会话、Responses API、基础文件／Bash／Monty 工具、工具执行前逐次许可和压缩节点。安装 `skilledgraph[agent]` 后运行 `sgraph-agent`，具体连接命令与边界见 README；[真实及离线验收](docs/development/SGRAPH_AGENT_ACCEPTANCE.md)已完成。
+
+## License
+
+Copyright 2026 cedarrocket and contributors.
+
+本项目采用 [Apache License 2.0](LICENSE)。
