@@ -9,7 +9,7 @@ class ToolParserTests(unittest.TestCase):
     def parse(self, text):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "test.md"
-            path.write_text(text)
+            path.write_text(text, encoding="utf-8")
             return parse_graph(path)
 
     def test_kind_source_and_table(self):

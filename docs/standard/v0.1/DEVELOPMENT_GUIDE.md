@@ -23,6 +23,21 @@ python3 -m venv .venv
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
+Windows PowerShell 使用同样的依赖和测试入口：
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[chat,agent,mcp]"
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe tests/mcp_demo/check.py --output .local-docs/mcp-results.json
+```
+
+[跨平台 CI](../../../.github/workflows/tests.yml) 在 Ubuntu、macOS、Windows 上运行同一套离线测试和本地 stdio MCP 验收，覆盖 Python 3.11 与 3.14。CI 关闭 Python UTF-8 模式以发现默认编码依赖；测试读写文本显式使用 UTF-8，含中文输出的示例子进程使用 UTF-8 模式和对应的输出解码。真实模型服务不进入 CI。
+
+`tests/fixtures/language/` 的 Markdown 资料通过 `.gitattributes` 固定为 LF，专门的 `crlf.md` 保留原始 CRLF 字节。换行测试还在运行时生成 LF／CRLF 两种输入，验证解析结果一致且输入字节不变。
+
+Windows 跳过需要 POSIX 工作区文件 API 的 agent 用例和两项 PTY 交互用例；agent 模型配置、请求构造及 CLI 帮助仍执行。这些 skip 表示对应功能未获 Windows 验收，不表示 agent 已支持 Windows。核心 DSL 解析、构图、执行和普通 Host 用例不按操作系统跳过。
+
 只使用解析器可以安装 `-e .`；纯图运行可使用 runtime extra。完整可选功能测试需要相应依赖；缺少依赖的 skip 不应被描述为该功能通过。常规 unittest 使用离线模型和临时资料，不需要真实 API key。真实服务测试必须显式运行，命令和实际用量见[测试说明](../../../tests/live/README.md)。
 
 ## 应保持的契约

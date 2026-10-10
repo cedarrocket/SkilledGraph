@@ -40,7 +40,7 @@ class ExecutionTests(unittest.TestCase):
 
     def graph(self, text):
         path = self.directory / "graph.md"
-        path.write_text(text)
+        path.write_text(text, encoding="utf-8")
         return path
 
     def test_prompt_history_and_body_not_saved(self):
@@ -74,7 +74,7 @@ class ExecutionTests(unittest.TestCase):
         self.assertEqual(material_messages(circular)[0].content, "[[...]]")
 
     def test_pyfunction_materials_order_and_single_invoke(self):
-        (self.directory / "tools.py").write_text('def prepare(state):\n    return "material:" + state["messages"][-1].content\n')
+        (self.directory / "tools.py").write_text('def prepare(state):\n    return "material:" + state["messages"][-1].content\n', encoding="utf-8")
         path = self.graph("# [Node] A\n- **@uses**: pyfunction:./tools.py:prepare\nInstructions\n")
         model = Model()
         result = load_graph(path, model=model).invoke({"messages": [HumanMessage(content="input")]})
@@ -83,7 +83,7 @@ class ExecutionTests(unittest.TestCase):
         self.assertEqual([m.content for m in result["messages"]], ["input", "material:input", "answer"])
 
     def test_pyfunction_none_still_calls_model(self):
-        (self.directory / "tools.py").write_text('def prepare(state):\n    return None\n')
+        (self.directory / "tools.py").write_text('def prepare(state):\n    return None\n', encoding="utf-8")
         model = Model()
         graph = load_graph(self.graph("# [Node] A\n- **@uses**: pyfunction:./tools.py:prepare\n"), model=model)
         self.assertEqual(len(graph.invoke({"messages": []})["messages"]), 1)
@@ -137,7 +137,7 @@ NO
             self.assertEqual(list(pool.map(run, keys)), [key.upper() for key in keys])
 
     def test_async_pyfunction_and_model(self):
-        (self.directory / "tools.py").write_text('async def prepare(state):\n    return "async material"\n')
+        (self.directory / "tools.py").write_text('async def prepare(state):\n    return "async material"\n', encoding="utf-8")
         model = Model()
         graph = load_graph(self.graph("# [Node] A\n- **@uses**: pyfunction:./tools.py:prepare\n"), model=model)
         result = asyncio.run(graph.ainvoke({"messages": []}))
@@ -235,7 +235,7 @@ NO
         self.assertEqual([r["messages"][-1].content for r in asyncio.run(runs())], ["YES", "NO"] * 5)
 
     def test_pyfunction_routes_from_model_not_material(self):
-        (self.directory / "tools.py").write_text('def prepare(state):\n    return "not the route"\n')
+        (self.directory / "tools.py").write_text('def prepare(state):\n    return "not the route"\n', encoding="utf-8")
         path = self.graph("# [Node] A\n- **@uses**: pyfunction:./tools.py:prepare\nChoose yes\n## [Transitions]\n- yes -> @End\n")
         model = Model(" yes ")
         result = load_graph(path, model=model).invoke({"messages": []})
@@ -243,7 +243,7 @@ NO
         self.assertEqual(len(model.calls), 1)
 
     def test_external_router_overrides_model_text_key(self):
-        (self.directory / "tools.py").write_text('def route(state):\n    assert state["messages"][-1].content == "full answer"\n    return "yes"\n')
+        (self.directory / "tools.py").write_text('def route(state):\n    assert state["messages"][-1].content == "full answer"\n    return "yes"\n', encoding="utf-8")
         path = self.graph("# [Node] A\n- **@router**: python:./tools.py:route\nAnswer normally\n## [Transitions]\n- yes -> @End\n")
         model = Model("full answer")
         load_graph(path, model=model).invoke({"messages": []})

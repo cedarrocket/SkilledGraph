@@ -1,0 +1,44 @@
+name: Cross-platform tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ['3.11', '3.14']
+    env:
+      # Catch reliance on Python's default text encoding; tests specify UTF-8.
+      PYTHONUTF8: '0'
+      LANGSMITH_TRACING: 'false'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install all offline test dependencies
+        run: python -m pip install -e ".[chat,agent,mcp]"
+      - name: Check dependencies
+        run: python -m pip check
+      - name: Run offline tests
+        run: python -m unittest discover -s tests -v
+      - name: Check installed command entry points
+        run: |
+          sgraph --help
+          sgraph-agent --help
+      - name: Verify local MCP transport and process cleanup
+        run: python tests/mcp_demo/check.py --output .local-docs/ci-mcp-results.json

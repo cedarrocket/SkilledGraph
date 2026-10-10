@@ -1,0 +1,4 @@
+# Keep language fixture bytes independent of core.autocrlf.
+tests/fixtures/language/**/*.md text eol=lf
+# This fixture intentionally contains literal CRLF bytes.
+tests/fixtures/language/valid/crlf.md -text !eol

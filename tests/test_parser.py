@@ -14,7 +14,7 @@ from skilledgraph import ParseError, parse_graph
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests/fixtures/language"
-MANIFEST = json.loads((FIXTURES / "manifest.json").read_text())
+MANIFEST = json.loads((FIXTURES / "manifest.json").read_text(encoding="utf-8"))
 ERRORS = {
     "no-node": "graph.empty", "node-no-name": "node.name", "node-invalid-name": "node.name",
     "node-duplicate": "node.duplicate", "config-duplicate": "config.duplicate",
@@ -51,7 +51,7 @@ def projection(graph, include_config=False):
 class ManifestTests(unittest.TestCase):
     def test_manifest_inventory(self):
         declared = {case["file"] for case in MANIFEST["cases"]}
-        present = {str(path.relative_to(FIXTURES)) for folder in ("valid", "invalid")
+        present = {path.relative_to(FIXTURES).as_posix() for folder in ("valid", "invalid")
                    for path in (FIXTURES / folder).glob("*.md")}
         self.assertEqual(declared, present)
         self.assertEqual(len(declared), len(MANIFEST["cases"]))
@@ -132,7 +132,7 @@ class BoundaryTests(unittest.TestCase):
     def test_references_are_opaque_and_never_loaded(self):
         marker = self.path.parent / "imported.txt"
         script = self.path.parent / "dangerous.py"
-        script.write_text(f"from pathlib import Path\nPath({str(marker)!r}).touch()\nraise RuntimeError('imported')\n")
+        script.write_text(f"from pathlib import Path\nPath({str(marker)!r}).touch()\nraise RuntimeError('imported')\n", encoding="utf-8")
         source = """# [Config]
 - **@host**: python:./dangerous.py:host
 - **@state**: python:./dangerous.py:State
@@ -294,6 +294,18 @@ class BoundaryTests(unittest.TestCase):
         for path in paths:
             with self.subTest(path=path):
                 self.assertTrue(parse_graph(path).nodes)
+
+    def test_lf_and_crlf_inputs_preserve_bytes_and_parse_equally(self):
+        source = (FIXTURES / "valid" / "prompt-extraction.md").read_bytes()
+        lf = source.replace(b"\r\n", b"\n")
+        with tempfile.TemporaryDirectory() as directory:
+            graphs = []
+            for name, data in (("lf", lf), ("crlf", lf.replace(b"\n", b"\r\n"))):
+                path = Path(directory) / (name + ".md")
+                path.write_bytes(data)
+                graphs.append(projection(parse_graph(path)))
+                self.assertEqual(path.read_bytes(), data)
+            self.assertEqual(graphs[0], graphs[1])
 
     def test_sensitive_fixture_bytes_are_unchanged_by_parsing(self):
         for name in ("crlf", "prompt-extraction"):

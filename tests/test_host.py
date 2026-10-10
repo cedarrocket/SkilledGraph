@@ -33,7 +33,7 @@ class HostTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.directory = Path(self.temp.name)
         self.path = self.directory / "graph.md"
-        self.path.write_text("# [Node] A\nHello\n## [Transitions]\n- @Default -> @End\n")
+        self.path.write_text("# [Node] A\nHello\n## [Transitions]\n- @Default -> @End\n", encoding="utf-8")
 
     def test_terminal_runs_once_and_leaves_next_line_unread(self):
         model = Model()
@@ -61,17 +61,17 @@ class HostTests(unittest.TestCase):
         self.assertIn("key", output.getvalue())
 
     def test_custom_host_receives_absolute_path_and_argv_without_build(self):
-        self.path.write_text("# [Config]\n- **@host**: python:./host.py:main\n- **@state**: python:./missing.py:State\n# [Node] A\n- **@uses**: nonexistent:any\n")
-        (self.directory / "host.py").write_text('def main(graph_path, argv):\n    assert graph_path.is_absolute()\n    assert graph_path.name == "graph.md"\n    assert argv == ["--custom", "value"]\n    return 7\n')
+        self.path.write_text("# [Config]\n- **@host**: python:./host.py:main\n- **@state**: python:./missing.py:State\n# [Node] A\n- **@uses**: nonexistent:any\n", encoding="utf-8")
+        (self.directory / "host.py").write_text('def main(graph_path, argv):\n    assert graph_path.is_absolute()\n    assert graph_path.name == "graph.md"\n    assert argv == ["--custom", "value"]\n    return 7\n', encoding="utf-8")
         self.assertEqual(launch([str(self.path), "--", "--custom", "value"]), 7)
 
     def test_check_never_imports_host(self):
-        self.path.write_text("# [Config]\n- **@host**: python:./missing.py:main\n# [Node] A\n")
+        self.path.write_text("# [Config]\n- **@host**: python:./missing.py:main\n# [Node] A\n", encoding="utf-8")
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(launch(["--check", str(self.path)]), 0)
 
     def test_end_to_end_module_cli_factory_and_pipe(self):
-        (self.directory / "model.py").write_text('from langchain_core.messages import AIMessage\nclass Model:\n    def invoke(self, messages, config=None):\n        return AIMessage(content="echo:" + messages[-1].content)\ndef create():\n    return Model()\n')
+        (self.directory / "model.py").write_text('from langchain_core.messages import AIMessage\nclass Model:\n    def invoke(self, messages, config=None):\n        return AIMessage(content="echo:" + messages[-1].content)\ndef create():\n    return Model()\n', encoding="utf-8")
         result = subprocess.run([sys.executable, "-m", "skilledgraph", str(self.path), "--", "--model-factory", "python:./model.py:create"], input="hello", capture_output=True, text=True, timeout=15)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, "[A] echo:hello\n")
@@ -105,8 +105,8 @@ class HostTests(unittest.TestCase):
             self.assertEqual(main([]), 130)
 
     def test_invalid_host_return(self):
-        self.path.write_text("# [Config]\n- **@host**: python:./host.py:main\n# [Node] A\n")
-        (self.directory / "host.py").write_text('def main(path, argv):\n    return "invalid"\n')
+        self.path.write_text("# [Config]\n- **@host**: python:./host.py:main\n# [Node] A\n", encoding="utf-8")
+        (self.directory / "host.py").write_text('def main(path, argv):\n    return "invalid"\n', encoding="utf-8")
         with self.assertRaisesRegex(TypeError, "exit code"):
             launch([str(self.path)])
 
@@ -124,7 +124,7 @@ class HostTests(unittest.TestCase):
 
 
     def test_native_message_representations_are_displayed(self):
-        self.path.write_text("# [Node] A\n- **@uses**: custom:any\n")
+        self.path.write_text("# [Node] A\n- **@uses**: custom:any\n", encoding="utf-8")
         def bind(payload, **kwargs):
             return lambda state: {"messages": [("assistant", "tuple reply"), {"role": "assistant", "content": "dict reply"}]}
         graph = load_graph(self.path, bindings={"custom": bind})
@@ -137,13 +137,13 @@ class HostTests(unittest.TestCase):
             import langchain.chat_models
         except ImportError:
             self.skipTest("requires chat extra")
-        (self.directory / "key.txt").write_text("dummy\n")
+        (self.directory / "key.txt").write_text("dummy\n", encoding="utf-8")
         with patch.dict(os.environ, {"SGRAPH_API_KEY_FILE": "key.txt", "SGRAPH_BASE_URL": "https://example.test", "SGRAPH_TEMPERATURE": "0"}, clear=True), patch("langchain.chat_models.init_chat_model") as init:
             create_model("deepseek:deepseek-chat", base_dir=self.directory)
             init.assert_called_once_with("deepseek:deepseek-chat", api_key="dummy", base_url="https://example.test", temperature=0.0)
 
     def test_factory_owns_configuration(self):
-        (self.directory / "model.py").write_text('def create():\n    return "factory model"\n')
+        (self.directory / "model.py").write_text('def create():\n    return "factory model"\n', encoding="utf-8")
         with patch.dict(os.environ, {"SGRAPH_API_KEY_FILE": "missing.txt"}):
             self.assertEqual(create_model(factory="python:./model.py:create", base_dir=self.directory), "factory model")
 
@@ -158,8 +158,8 @@ class HostTests(unittest.TestCase):
 
     def interrupt_graph(self):
         from langgraph.checkpoint.memory import InMemorySaver
-        self.path.write_text("# [Node] Ask\n- **@uses**: python:./ask.py:ask\n## [Transitions]\n- @Default -> Report\n# [Node] Report\nReply\n## [Transitions]\n- @Default -> @End\n")
-        (self.directory / "ask.py").write_text('from langgraph.types import interrupt\ndef ask(state):\n    first = interrupt("first?")\n    second = interrupt({"question": "second?"})\n    return {"messages": [("human", first + ":" + second)]}\n')
+        self.path.write_text("# [Node] Ask\n- **@uses**: python:./ask.py:ask\n## [Transitions]\n- @Default -> Report\n# [Node] Report\nReply\n## [Transitions]\n- @Default -> @End\n", encoding="utf-8")
+        (self.directory / "ask.py").write_text('from langgraph.types import interrupt\ndef ask(state):\n    first = interrupt("first?")\n    second = interrupt({"question": "second?"})\n    return {"messages": [("human", first + ":" + second)]}\n', encoding="utf-8")
         model = Model()
         graph = load_graph(self.path, model=model, compile_kwargs={"checkpointer": InMemorySaver()})
         return graph, model
@@ -269,7 +269,7 @@ class HostTests(unittest.TestCase):
         def confirm() -> str:
             """Ask for confirmation."""
             return interrupt("tool approval?")
-        self.path.write_text("# [Node] Request\n- **@uses**: custom:request\n## [Transitions]\n- @Default -> Exec\n# [ToolNode] Exec\n- **@tools**: all\n## [Transitions]\n- @Default -> Report\n# [Node] Report\nReport tool result\n## [Transitions]\n- @Default -> @End\n")
+        self.path.write_text("# [Node] Request\n- **@uses**: custom:request\n## [Transitions]\n- @Default -> Exec\n# [ToolNode] Exec\n- **@tools**: all\n## [Transitions]\n- @Default -> Report\n# [Node] Report\nReport tool result\n## [Transitions]\n- @Default -> @End\n", encoding="utf-8")
         def bind(payload, **kwargs):
             return lambda state: {"messages": [AIMessage(content="", tool_calls=[
                 {"name": "confirm", "args": {}, "id": "call-confirm", "type": "tool_call"}])]}

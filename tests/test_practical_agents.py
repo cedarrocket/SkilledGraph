@@ -39,8 +39,8 @@ class PracticalAgentTests(unittest.TestCase):
     def test_all_five_demo_clis(self):
         for case in CASES:
             with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
-                result = subprocess.run([sys.executable, "-m", "skilledgraph", str(EXAMPLES / case / "workflow.md"),
-                    "--", "--demo", "--output", directory], capture_output=True, text=True, timeout=20)
+                result = subprocess.run([sys.executable, "-X", "utf8", "-m", "skilledgraph", str(EXAMPLES / case / "workflow.md"),
+                    "--", "--demo", "--output", directory], capture_output=True, text=True, encoding="utf-8", timeout=20)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertIn("Offline demo", result.stderr)
                 self.assertTrue(result.stdout.strip())
@@ -112,7 +112,7 @@ class PracticalAgentTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             result = self.email("yes", directory)
             self.assertTrue(result["approved"])
-            self.assertEqual(Path(result["artifact"]).read_text(), result["draft"])
+            self.assertEqual(Path(result["artifact"]).read_text(encoding="utf-8"), result["draft"])
             self.assertIn("账单政策", result["policy"])
             self.assertEqual(len(list(Path(directory).glob("*.md"))), 1)
 
@@ -134,7 +134,7 @@ class PracticalAgentTests(unittest.TestCase):
             else:
                 joined.append([m.text for m in messages if m.type == "ai"])
             return host(case, "demo_reply")(messages)
-        source = (EXAMPLES / case / "sample.py").read_text()
+        source = (EXAMPLES / case / "sample.py").read_text(encoding="utf-8")
         result = run(case, model(reply), {"messages": [HumanMessage(content=source)]})
         self.assertEqual(len(joined), 1)
         self.assertEqual(len(joined[0]), 3)
@@ -169,11 +169,11 @@ class PracticalAgentTests(unittest.TestCase):
         case = CASES[1]
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "data.csv"
-            path.write_text("id,amount,customer\nX,2.00,A\nY,,B\n")
+            path.write_text("id,amount,customer\nX,2.00,A\nY,,B\n", encoding="utf-8")
             result = run(case, model(host(case, "demo_reply")), {"messages": [HumanMessage(content="audit")], "csv_path": str(path)})
             self.assertEqual(result["metrics"]["invalid_rows"], [3])
             self.assertEqual(result["metrics"]["valid_total"], "2.00")
-            path.write_text("wrong,headers\na,b\n")
+            path.write_text("wrong,headers\na,b\n", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "requires"):
                 run(case, model(host(case, "demo_reply")), {"messages": [HumanMessage(content="audit")], "csv_path": str(path)})
 

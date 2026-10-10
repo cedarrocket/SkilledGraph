@@ -24,6 +24,43 @@ def check(value, message):
         raise AssertionError(message)
 
 
+def process_is_running(pid):
+    """Check liveness without sending a signal or terminating a Windows process."""
+    if os.name == "nt":
+        import ctypes
+        from ctypes import wintypes
+
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel32.OpenProcess.restype = wintypes.HANDLE
+        kernel32.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+        kernel32.WaitForSingleObject.restype = wintypes.DWORD
+        kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+        kernel32.CloseHandle.restype = wintypes.BOOL
+        handle = kernel32.OpenProcess(0x00100000, False, pid)  # SYNCHRONIZE
+        if not handle:
+            error = ctypes.get_last_error()
+            if error == 87:  # ERROR_INVALID_PARAMETER: PID no longer exists.
+                return False
+            raise ctypes.WinError(error)
+        try:
+            status = kernel32.WaitForSingleObject(handle, 0)
+            if status == 0:  # WAIT_OBJECT_0: process has exited.
+                return False
+            if status == 258:  # WAIT_TIMEOUT: process is still running.
+                return True
+            raise ctypes.WinError(ctypes.get_last_error())
+        finally:
+            kernel32.CloseHandle(handle)
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
 def decoded(value):
     if isinstance(value, ToolMessage):
         value = value.text
@@ -57,6 +94,7 @@ async def run(live):
         check(direct["sum"] == 42 and direct["call_count"] == 1, "Wrong direct result")
         server_pid = direct["server_pid"]
         check(server_pid != os.getpid(), "Server was not an external subprocess")
+        check(process_is_running(server_pid), "MCP server is not running during its session")
         results.append({"case": "direct_call", "passed": True, "result": direct})
 
         graph = load_graph(BASE / "workflow.md", model=OfflineModel(), tools=tools)
@@ -97,12 +135,8 @@ async def run(live):
                             "calls": records, "tool_results": [decoded(m) for m in replies],
                             "final": messages[-1].text})
     # stdio context exit must reap the local subprocess.
-    try:
-        os.kill(server_pid, 0)
-    except ProcessLookupError:
-        results.append({"case": "server_cleanup", "passed": True})
-    else:
-        raise AssertionError("MCP server still running after context exit")
+    check(not process_is_running(server_pid), "MCP server still running after context exit")
+    results.append({"case": "server_cleanup", "passed": True})
     return {"date_utc": datetime.now(timezone.utc).isoformat(), "live": live,
             "versions": {name: importlib.metadata.version(name) for name in ("langchain", "fastmcp", "mcp")},
             "results": results}
@@ -115,7 +149,7 @@ def main():
     args = parser.parse_args()
     result = asyncio.run(asyncio.wait_for(run(args.live), timeout=120))
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"PASS: {len(result['results'])} MCP checks")
     for item in result["results"]:
         print(item["case"], "PASS")

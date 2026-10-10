@@ -29,7 +29,7 @@ class ParallelTests(unittest.TestCase):
         self.path = Path(self.temp.name) / "graph.md"
 
     def builder(self, actions, schema=State):
-        self.path.write_text("\n".join(f"# [Node] {name}\n- **@uses**: native:{name}\n" for name in actions))
+        self.path.write_text("\n".join(f"# [Node] {name}\n- **@uses**: native:{name}\n" for name in actions), encoding="utf-8")
         return build_graph(self.path, state_schema=schema,
                            bindings={"native": lambda payload, **kwargs: actions[payload]})
 

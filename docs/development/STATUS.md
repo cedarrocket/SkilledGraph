@@ -19,6 +19,7 @@
 
 | 范围 | 公开记录 |
 | --- | --- |
+| Windows / Python 3.14 | [Windows](WINDOWS_ACCEPTANCE.md) |
 | 解析、绑定和基础执行 | [M1](M1_PARSER.md)、[M2](M2_BUILDING.md)、[M3～M5](M3_M5_COMPLETION.md) |
 | 工具与本地 MCP | [工具](TOOLS_COMPLETION.md)、[MCP](MCP_ACCEPTANCE.md) |
 | Host 与连接 | [中断](HOST_INTERRUPT_ACCEPTANCE.md)、[配置向导](HOST_SETUP_ACCEPTANCE.md)、[独立分离](CHAT_HOST_SEPARATION.md) |
@@ -33,7 +34,7 @@
 - 个人脚本工具，不承诺所有 LangGraph 功能、模型或部署方式均已验收。
 - 基础 Host 不延续下一次执行的消息；持续会话由 sgraph_agent 或自定义 Host 提供。
 - 模块引用、文件级执行器选择、DSL 输出 Schema、多模型声明及 DSL 并行语法未提供。
-- 本地 stdio MCP 已测试，远程 MCP 与跨平台运行未验收；sgraph_agent 当前使用 POSIX 文件／进程能力。
+- 本地 stdio MCP 已在 Windows / Python 3.14 离线验收，Linux/macOS 的新 CI 仍待实际执行；远程 MCP 未验收。详见 [Windows 验收](WINDOWS_ACCEPTANCE.md)。sgraph_agent 当前使用 POSIX 文件／进程能力。
 - 历史压缩有损；进程内 checkpoint 不提供跨进程持久化保证。
 - 工具审批不是 Bash OS 沙箱；重试和中断不自动保证副作用只执行一次。
 - 部分原生适配使用固定版本的私有 API，依赖升级需复验。

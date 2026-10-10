@@ -44,7 +44,7 @@ class SetupTests(unittest.TestCase):
     def test_environment_key_reuse_is_not_copied_to_disk(self):
         profile = self.setup('\nlocal-model\n\n\n\n', {"OPENAI_API_KEY": "environment-secret"})
         self.assertEqual(profile["options"], {"base_url": "https://api.openai.com/v1", "use_responses_api": False})
-        self.assertNotIn("environment-secret", self.path.read_text())
+        self.assertNotIn("environment-secret", self.path.read_text(encoding="utf-8"))
 
     def test_invalid_values_reprompt_without_echo(self):
         profile = self.setup('bad-url\nhttp://localhost:1234/v1\n\nlocal\n9\n1\n\nnot-needed\n{"X":"bad-secret\\n"}\n{}\n')
@@ -88,7 +88,7 @@ class SetupTests(unittest.TestCase):
 
     def test_corrupt_config_does_not_echo_contents(self):
         self.path.parent.mkdir()
-        self.path.write_text('{"secret":"hidden-value",broken')
+        self.path.write_text('{"secret":"hidden-value",broken', encoding="utf-8")
         with self.assertRaises(ValueError) as caught:
             load_profile(self.path)
         self.assertNotIn("hidden-value", str(caught.exception))
@@ -112,13 +112,13 @@ class SetupTests(unittest.TestCase):
             self.skipTest("requires runtime extra")
         profile = self.setup('\nmodel\n\ndummy\n\n')
         graph_path = self.path.parent / "graph.md"
-        graph_path.write_text("# [Node] A\nHello\n")
+        graph_path.write_text("# [Node] A\nHello\n", encoding="utf-8")
         with patch.dict(os.environ, {"SGRAPH_HOST_CONFIG": str(self.path)}, clear=True), \
              patch("sgraph_chat_host.host.create_model") as create, \
              patch("sgraph_chat_host.host.load_graph"), patch("sgraph_chat_host.host.run_chat", return_value=0):
             self.assertEqual(main(graph_path, []), 0)
             create.assert_called_with(profile["model"], base_dir=graph_path.parent, connection_options=profile["options"])
-            self.path.write_text("broken")
+            self.path.write_text("broken", encoding="utf-8")
             with patch.dict(os.environ, {"SGRAPH_MODEL": "deepseek:test"}):
                 self.assertEqual(main(graph_path, []), 0)
                 create.assert_called_with("deepseek:test", None, base_dir=graph_path.parent)

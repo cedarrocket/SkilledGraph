@@ -61,7 +61,7 @@ class ToolsTests(unittest.TestCase):
 
     def path(self, text=WORKFLOW):
         path = self.directory / "graph.md"
-        path.write_text(text)
+        path.write_text(text, encoding="utf-8")
         return path
 
     def test_cycle_and_updates(self):
@@ -228,7 +228,7 @@ class ToolsTests(unittest.TestCase):
         self.assertEqual([m.content for m in result["messages"]], ["redacted"])
 
     def test_pyfunction_and_toolnode_router(self):
-        (self.directory / "prepare.py").write_text('def prepare(state):\n    return "material"\n')
+        (self.directory / "prepare.py").write_text('def prepare(state):\n    return "material"\n', encoding="utf-8")
         text = WORKFLOW.replace("Use tools.", "- **@uses**: pyfunction:./prepare.py:prepare")
         # Choose finish at ToolNode through its explicit native router.
         text = text.replace("- **@tools**: all", "- **@tools**: all\n- **@router**: test:route")

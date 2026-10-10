@@ -23,7 +23,7 @@ class RequestInputTests(unittest.TestCase):
         self.config = {"configurable": {"thread_id": "test"}}
 
     def graph(self, payload, **kwargs):
-        self.path.write_text(f"# [Node] Ask\n- **@uses**: request_input:{payload}\nIgnored body\n## [Transitions]\n- @Default -> @End\n")
+        self.path.write_text(f"# [Node] Ask\n- **@uses**: request_input:{payload}\nIgnored body\n## [Transitions]\n- @Default -> @End\n", encoding="utf-8")
         return load_graph(self.path, compile_kwargs={"checkpointer": InMemorySaver()}, **kwargs)
 
     def test_literal_prompt_and_empty_string_resume(self):
@@ -64,8 +64,8 @@ class RequestInputTests(unittest.TestCase):
         asyncio.run(run())
 
     def test_router_sees_merged_reply_then_selects_table(self):
-        self.path.write_text("# [Node] Ask\n- **@uses**: request_input:continue?\n- **@router**: python:./route.py:route\n## [Transitions]\n- yes -> Report\n- no -> @End\n# [Node] Report\nReply\n## [Transitions]\n- @Default -> @End\n")
-        (self.path.parent / "route.py").write_text('def route(state):\n    return state["messages"][-1].content\n')
+        self.path.write_text("# [Node] Ask\n- **@uses**: request_input:continue?\n- **@router**: python:./route.py:route\n## [Transitions]\n- yes -> Report\n- no -> @End\n# [Node] Report\nReply\n## [Transitions]\n- @Default -> @End\n", encoding="utf-8")
+        (self.path.parent / "route.py").write_text('def route(state):\n    return state["messages"][-1].content\n', encoding="utf-8")
         model = Model()
         graph = load_graph(self.path, model=model, compile_kwargs={"checkpointer": InMemorySaver()})
         graph.invoke({"messages": []}, self.config)

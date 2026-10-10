@@ -3,6 +3,7 @@ import asyncio
 from itertools import permutations
 from pathlib import Path
 import subprocess
+import sys
 import unittest
 from uuid import uuid4
 
@@ -229,6 +230,6 @@ class AdvancedReducerTests(unittest.TestCase):
 
     def test_two_example_clis(self):
         for path,arguments in [(MEMORY,['--','--demo','--budget-chars','120']),(LAB,[])]:
-            result=subprocess.run([str(ROOT/'.venv/bin/sgraph'),str(path),*arguments],capture_output=True,text=True,timeout=30)
+            result=subprocess.run([sys.executable,'-X','utf8','-m','skilledgraph',str(path),*arguments],capture_output=True,text=True,encoding="utf-8",timeout=30)
             self.assertEqual(result.returncode,0,result.stderr)
             self.assertTrue(result.stdout.strip())

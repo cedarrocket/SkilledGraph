@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -41,6 +42,7 @@ class Model:
     async def ainvoke(self,messages,config=None): return self.invoke(messages,config)
 
 
+@unittest.skipUnless(os.name == "posix", "agent workspace requires POSIX dir-fd APIs")
 class AgentTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory()
@@ -197,6 +199,7 @@ class AgentTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,'Previous turn'): broken.ask('retry')
 
 
+@unittest.skipUnless(os.name == "posix", "agent workspace requires POSIX dir-fd APIs")
 class MontyAndFilesystemTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
@@ -307,6 +310,7 @@ class ConnectionTests(unittest.TestCase):
             create_model(self.arguments(api='chat',reasoning_effort=None))
             self.assertFalse(factory.call_args.kwargs['use_responses_api'])
 
+    @unittest.skipUnless(os.name == "posix", "toolkit requires POSIX workspace APIs")
     def test_real_chatopenai_responses_serializes_calls_outputs_and_reasoning(self):
         import httpx
         from langchain_openai import ChatOpenAI
@@ -346,6 +350,6 @@ class ConnectionTests(unittest.TestCase):
         self.assertNotIn('id',reasoning)
 
     def test_agent_cli_help_no_network(self):
-        result=subprocess.run([str(ROOT/'.venv/bin/python'),'-m','sgraph_agent','--help'],capture_output=True,text=True,timeout=20)
+        result=subprocess.run([sys.executable,'-m','sgraph_agent','--help'],capture_output=True,text=True,timeout=20)
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertIn('--workspace',result.stdout)

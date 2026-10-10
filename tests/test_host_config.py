@@ -27,7 +27,7 @@ class HostConfigTests(unittest.TestCase):
 
     def test_file_relative_absolute_and_no_env_mutation(self):
         path = self.directory / "key.txt"
-        path.write_text("dummy\n")
+        path.write_text("dummy\n", encoding="utf-8")
         for value in ("key.txt", str(path)):
             env = {"SGRAPH_API_KEY_FILE": value}
             original = env.copy()
@@ -37,7 +37,7 @@ class HostConfigTests(unittest.TestCase):
     def test_file_validation_does_not_echo_secret(self):
         path = self.directory / "key.txt"
         for value in ("", "sensitive wrong key"):
-            path.write_text(value)
+            path.write_text(value, encoding="utf-8")
             with self.assertRaises(ValueError) as caught:
                 model_options(base_dir=self.directory, environ={"SGRAPH_API_KEY_FILE": str(path)})
             self.assertNotIn("sensitive", str(caught.exception))
