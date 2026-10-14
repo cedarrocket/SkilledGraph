@@ -20,3 +20,6 @@ deepseek_api.txt
 # Private discussion archives and unpublished Git backups
 .local-docs/
 .local-history/
+
+# Local-only model briefing
+/docs/agent-guide/

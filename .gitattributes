@@ -2,3 +2,6 @@
 tests/fixtures/language/**/*.md text eol=lf
 # This fixture intentionally contains literal CRLF bytes.
 tests/fixtures/language/valid/crlf.md -text !eol
+
+tests/fixtures/language/valid/crlf_cn.md -text !eol
+tests/fixtures/language/valid/crlf_en.md -text !eol

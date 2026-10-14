@@ -1,5 +1,7 @@
 # SkilledGraph
 
+[中文](README_cn.md) | [English](README_en.md) | [Language files / 语言版本](docs/LOCALIZATION_en.md)
+
 SkilledGraph 是面向个人脚本的 Markdown DSL：用几行文本描述 LLM 节点和转移，用外部 Python 处理需要代码的逻辑，复杂任务交给用户自己的 Host 与原生 LangGraph。
 
 当前开发依据是 **[v0.1 标准文档集](docs/standard/v0.1/README.md)**。v0.1 当前范围的开发与确定性测试已完成：提供解析、原生图构建、普通 Prompt、python／pyfunction、router、State／Reducer 接入及 sgraph 启动器。273项测试通过；DeepSeek 与本地 MCP 已受控验收，跨平台运行尚未验收。

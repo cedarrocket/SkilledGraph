@@ -1,0 +1,511 @@
+{
+  "version": "0.1",
+  "stage": "parse-and-static-validation",
+  "projection_note": "expected projects required fields of parse results, not the full IR or public API; omitted fields must still be preserved.",
+  "cases": [
+    {
+      "id": "single",
+      "file": "valid/single_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "回答问题。",
+            "settings": {},
+            "descriptions": [],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "prompt-extraction",
+      "file": "valid/prompt-extraction_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "第一行\n\n\n第二行  ",
+            "settings": {
+              "uses": "python:./tools.py:run"
+            },
+            "descriptions": [
+              "说明"
+            ],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "literal-contexts",
+      "file": "valid/literal-contexts_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "Explain",
+        "nodes": [
+          {
+            "name": "Explain",
+            "prompt": "- **uses**: ordinary\n- @uses: ordinary\n\n```markdown\n# [Node] Literal\n- **@uses**: python:./missing.py:run\n>>> literal\n## [Transitions]\n- @Default -> @End\n```\n\n~~~text\n# [Node] AlsoLiteral\n~~~\n\n> # [Node] Quoted\n> - **@uses**: not-a-setting\n\n- 外层\n  - **@uses**: nested\n\n    # [Node] Indented\n\n`- **@uses**: inline`",
+            "settings": {},
+            "descriptions": [],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "config-scope",
+      "file": "valid/config-scope_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "config": {
+          "state": "python:./state.py:State",
+          "host": "python:./host.py:main"
+        },
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "回答问题。",
+            "settings": {},
+            "descriptions": [],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "spaces-unicode",
+      "file": "valid/spaces-unicode_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "步骤-01",
+        "nodes": [
+          {
+            "name": "步骤-01",
+            "prompt": "第一段。\n\n\n第二段。",
+            "settings": {
+              "uses": "python:./my tools.py:run"
+            },
+            "descriptions": [
+              " 保留一个前导空格"
+            ],
+            "transitions": [
+              [
+                "@Default",
+                "报告"
+              ]
+            ]
+          },
+          {
+            "name": "报告",
+            "prompt": "回答问题。",
+            "settings": {},
+            "descriptions": [],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "table-outer-pipes",
+      "file": "valid/table-outer-pipes_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "选择 ready 或 missing，并解释原因。",
+            "settings": {},
+            "descriptions": [],
+            "transitions": [
+              [
+                "ready",
+                "B"
+              ],
+              [
+                "missing",
+                "B"
+              ]
+            ]
+          },
+          {
+            "name": "B",
+            "prompt": "回答问题。",
+            "settings": {},
+            "descriptions": [],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "no-table-prompt",
+      "file": "valid/no-table-prompt_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "回答问题。",
+            "settings": {},
+            "descriptions": [],
+            "transitions": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "no-table-python",
+      "file": "valid/no-table-python_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "",
+            "settings": {
+              "uses": "python:./tools.py:run"
+            },
+            "descriptions": [
+              "仍执行代码。"
+            ],
+            "transitions": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "cycle",
+      "file": "valid/cycle_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "回答问题。",
+            "settings": {},
+            "descriptions": [],
+            "transitions": [
+              [
+                "@Default",
+                "A"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "settings-after-text",
+      "file": "valid/settings-after-text_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "静态正文。",
+            "settings": {
+              "uses": "python:./tools.py:run"
+            },
+            "descriptions": [
+              "说明"
+            ],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-prompt",
+      "file": "valid/empty-prompt_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "",
+            "settings": {},
+            "descriptions": [
+              "只有说明，语法合法；不据此关闭模型调用。"
+            ],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "crlf",
+      "file": "valid/crlf_en.md",
+      "accept": true,
+      "expected": {
+        "entry": "A",
+        "nodes": [
+          {
+            "name": "A",
+            "prompt": "第一段。\n\n第二段。",
+            "settings": {},
+            "descriptions": [
+              "说明"
+            ],
+            "transitions": [
+              [
+                "@Default",
+                "@End"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "no-node",
+      "file": "invalid/no-node_en.md",
+      "accept": false,
+      "reason": "至少一个节点"
+    },
+    {
+      "id": "node-no-name",
+      "file": "invalid/node-no-name_en.md",
+      "accept": false,
+      "reason": "节点缺少名称"
+    },
+    {
+      "id": "node-invalid-name",
+      "file": "invalid/node-invalid-name_en.md",
+      "accept": false,
+      "reason": "名称不含空白"
+    },
+    {
+      "id": "node-duplicate",
+      "file": "invalid/node-duplicate_en.md",
+      "accept": false,
+      "reason": "重复节点"
+    },
+    {
+      "id": "config-duplicate",
+      "file": "invalid/config-duplicate_en.md",
+      "accept": false,
+      "reason": "重复 Config"
+    },
+    {
+      "id": "config-after-node",
+      "file": "invalid/config-after-node_en.md",
+      "accept": false,
+      "reason": "Config 位置"
+    },
+    {
+      "id": "implicit-config",
+      "file": "invalid/implicit-config_en.md",
+      "accept": false,
+      "reason": "不允许隐式 Config"
+    },
+    {
+      "id": "node-file-setting",
+      "file": "invalid/node-file-setting_en.md",
+      "accept": false,
+      "reason": "节点中不允许 host"
+    },
+    {
+      "id": "config-node-setting",
+      "file": "invalid/config-node-setting_en.md",
+      "accept": false,
+      "reason": "Config 中不允许 uses"
+    },
+    {
+      "id": "setting-unknown",
+      "file": "invalid/setting-unknown_en.md",
+      "accept": false,
+      "reason": "未知设置"
+    },
+    {
+      "id": "setting-empty",
+      "file": "invalid/setting-empty_en.md",
+      "accept": false,
+      "reason": "空值"
+    },
+    {
+      "id": "setting-duplicate",
+      "file": "invalid/setting-duplicate_en.md",
+      "accept": false,
+      "reason": "重复设置"
+    },
+    {
+      "id": "setting-no-colon",
+      "file": "invalid/setting-no-colon_en.md",
+      "accept": false,
+      "reason": "设置缺冒号"
+    },
+    {
+      "id": "setting-unclosed-bold",
+      "file": "invalid/setting-unclosed-bold_en.md",
+      "accept": false,
+      "reason": "设置缺闭合标记"
+    },
+    {
+      "id": "fence-unclosed",
+      "file": "invalid/fence-unclosed_en.md",
+      "accept": false,
+      "reason": "未闭合围栏"
+    },
+    {
+      "id": "transitions-empty",
+      "file": "invalid/transitions-empty_en.md",
+      "accept": false,
+      "reason": "空转移区块"
+    },
+    {
+      "id": "transitions-duplicate",
+      "file": "invalid/transitions-duplicate_en.md",
+      "accept": false,
+      "reason": "重复 Transitions"
+    },
+    {
+      "id": "transitions-prose",
+      "file": "invalid/transitions-prose_en.md",
+      "accept": false,
+      "reason": "转移区块不能恢复正文"
+    },
+    {
+      "id": "transitions-description",
+      "file": "invalid/transitions-description_en.md",
+      "accept": false,
+      "reason": "转移区块不提供说明语法"
+    },
+    {
+      "id": "transitions-setting",
+      "file": "invalid/transitions-setting_en.md",
+      "accept": false,
+      "reason": "转移区块不接收设置"
+    },
+    {
+      "id": "end-shorthand",
+      "file": "invalid/end-shorthand_en.md",
+      "accept": false,
+      "reason": "没有 End 简写"
+    },
+    {
+      "id": "route-unknown-target",
+      "file": "invalid/route-unknown-target_en.md",
+      "accept": false,
+      "reason": "目标不存在"
+    },
+    {
+      "id": "route-duplicate",
+      "file": "invalid/route-duplicate_en.md",
+      "accept": false,
+      "reason": "重复路由键"
+    },
+    {
+      "id": "route-default-mixed",
+      "file": "invalid/route-default-mixed_en.md",
+      "accept": false,
+      "reason": "无条件与条件边混用"
+    },
+    {
+      "id": "route-unknown-special",
+      "file": "invalid/route-unknown-special_en.md",
+      "accept": false,
+      "reason": "未支持的特殊路由"
+    },
+    {
+      "id": "route-end-key",
+      "file": "invalid/route-end-key_en.md",
+      "accept": false,
+      "reason": "End 仅用于目标"
+    },
+    {
+      "id": "route-default-target",
+      "file": "invalid/route-default-target_en.md",
+      "accept": false,
+      "reason": "Default 仅用于键"
+    },
+    {
+      "id": "route-styled-name",
+      "file": "invalid/route-styled-name_en.md",
+      "accept": false,
+      "reason": "执行名称不解码样式"
+    },
+    {
+      "id": "table-no-data",
+      "file": "invalid/table-no-data_en.md",
+      "accept": false,
+      "reason": "表格至少一条记录"
+    },
+    {
+      "id": "table-missing-target",
+      "file": "invalid/table-missing-target_en.md",
+      "accept": false,
+      "reason": "缺失执行列／空目标"
+    },
+    {
+      "id": "table-blank-resume",
+      "file": "invalid/table-blank-resume_en.md",
+      "accept": false,
+      "reason": "不能在空行后续表"
+    },
+    {
+      "id": "table-second-table",
+      "file": "invalid/table-second-table_en.md",
+      "accept": false,
+      "reason": "不能出现第二张表"
+    },
+    {
+      "id": "formats-mixed",
+      "file": "invalid/formats-mixed_en.md",
+      "accept": false,
+      "reason": "格式混用"
+    }
+  ]
+}

@@ -15,6 +15,8 @@ dependencies = ["markdown-it-py==3.0.0"]
 [project.scripts]
 sgraph = "skilledgraph.cli:main"
 sgraph-agent = "sgraph_agent.host:cli"
+sgraph-agent-cn = "sgraph_agent.host_cn:cli"
+sgraph-agent-en = "sgraph_agent.host_en:cli"
 
 [project.optional-dependencies]
 runtime = ["langgraph==1.2.14", "langchain-core==1.6.9"]
@@ -32,4 +34,4 @@ where = ["src", ".", "examples/chat-host/src"]
 include = ["skilledgraph*", "sgraph_agent*", "sgraph_chat_host*"]
 
 [tool.setuptools.package-data]
-sgraph_agent = ["workflow.md"]
+sgraph_agent = ["workflow.md", "workflow_cn.md", "workflow_en.md"]

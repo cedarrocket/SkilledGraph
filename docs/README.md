@@ -1,5 +1,7 @@
 # 文档入口
 
+[中文](README_cn.md) | [English](README_en.md) | [语言版本 / Languages](LOCALIZATION_en.md)
+
 公开文档分为三类，避免把设计承诺与某一次测试结果混为一谈。
 
 | 类别 | 入口 | 用途 |

@@ -1,0 +1,6 @@
+id,amount,customer
+A1,12.50,Alice
+A2,7.50,Bob
+A2,7.50,Bob
+A3,invalid,Carol
+A4,3.00,

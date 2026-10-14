@@ -52,7 +52,8 @@ class ManifestTests(unittest.TestCase):
     def test_manifest_inventory(self):
         declared = {case["file"] for case in MANIFEST["cases"]}
         present = {path.relative_to(FIXTURES).as_posix() for folder in ("valid", "invalid")
-                   for path in (FIXTURES / folder).glob("*.md")}
+                   for path in (FIXTURES / folder).glob("*.md")
+                   if not path.stem.endswith(("_cn", "_en"))}
         self.assertEqual(declared, present)
         self.assertEqual(len(declared), len(MANIFEST["cases"]))
 
