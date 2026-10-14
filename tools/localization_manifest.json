@@ -187,7 +187,11 @@
     "tests/test_tool_parser.py",
     "tests/test_tools.py",
     "docs/LOCALIZATION.md",
-    "docs/development/LOCALIZATION_ACCEPTANCE.md"
+    "docs/development/LOCALIZATION_ACCEPTANCE.md",
+    "docs/tutorials/README.md",
+    "docs/tutorials/01-QUICKSTART.md",
+    "docs/tutorials/02-STEP-BY-STEP.md",
+    "docs/tutorials/03-DSL-HANDBOOK.md"
   ],
   "shared": [
     "src/skilledgraph/**",
