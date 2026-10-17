@@ -48,10 +48,16 @@ def _checked_router(action, node, records):
     original = coerce_to_runnable(action, name=f"{node.name}_router", trace=True)
 
     def checked(state, config: RunnableConfig):
-        return validate(original.invoke(state, config))
+        key = validate(original.invoke(state, config))
+        from .trace_integration import record_route
+        record_route(config, key, [records[allowed.index(key)].target])
+        return key
 
     async def achecked(state, config: RunnableConfig):
-        return validate(await original.ainvoke(state, config))
+        key = validate(await original.ainvoke(state, config))
+        from .trace_integration import arecord_route
+        await arecord_route(config, key, [records[allowed.index(key)].target])
+        return key
 
     schema = _get_branch_path_input_schema(original)
     if schema is not None:
@@ -61,7 +67,12 @@ def _checked_router(action, node, records):
 
 
 def build(spec, *, state_schema=None, input_schema=None, output_schema=None,
-          context_schema=None, model=None, tools=None, bindings=None):
+          context_schema=None, model=None, tools=None, bindings=None,
+          _tree=None, _scope=()):
+    from .subgraphs import resolve_tree
+    _tree = resolve_tree(spec) if _tree is None else _tree
+    from .trace_integration import enabled, metadata, guard_registered_node
+    tracing = enabled(spec)
     registry = builtin_bindings()
     if bindings is not None:
         if not isinstance(bindings, Mapping):
@@ -94,7 +105,20 @@ def build(spec, *, state_schema=None, input_schema=None, output_schema=None,
         raise _error(BindingError, "binding.tools", str(exc), spec.nodes[0].header_span, "bind") from exc
     actions = {}
     for node in spec.nodes:
-        if node.kind == "ToolNode":
+        if node.kind == "Subgraph":
+            child = _tree.children[node.name]
+            # Each file owns its State; only build resources cross this boundary.
+            # 文件自行定义 State，只向子图传递构建资源。
+            child_builder = build(child.spec, context_schema=context_schema,
+                                  model=model, tools=tuple(available_tools.values()),
+                                  bindings=registry, _tree=child,
+                                  _scope=(*_scope, node.name))
+            try:
+                action = child_builder.compile()
+            except Exception as exc:
+                raise _error(BuildError, "build.subgraph", f"Cannot compile subgraph {node.name!r}: {exc}",
+                             _setting(node, "source").value_span, "compile") from exc
+        elif node.kind == "ToolNode":
             try:
                 action = ToolNode(select_tools(node.setting("tools"), available_tools))
             except Exception as exc:
@@ -111,7 +135,11 @@ def build(spec, *, state_schema=None, input_schema=None, output_schema=None,
         actions[node.name] = action
         try:
             destinations = tuple(set(action.routes.values())) if isinstance(action, ModelNode) and action.routes else None
-            builder.add_node(node.name, action, destinations=destinations)
+            builder.add_node(node.name, action, destinations=destinations,
+                             metadata=metadata(spec, node, scope=_scope) if tracing else
+                             {"trace_graph_version": None, "trace_node": None})
+            if tracing:
+                guard_registered_node(builder, node.name)
         except Exception as exc:
             raise _error(BuildError, "build.node", f"Cannot add node {node.name!r}: {exc}", node.header_span, "build") from exc
 

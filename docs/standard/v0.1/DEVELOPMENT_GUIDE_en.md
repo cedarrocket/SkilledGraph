@@ -70,3 +70,13 @@ Packaging changes need wheel contents, outside-repository imports, CLI, and data
 Run checks appropriate to the change; record commands, results, and missing coverage. Scripted models verify execution contracts, not intelligence. Finite live samples do not certify all models/material/platforms.
 
 Semantic changes require matching specification/example/test updates. Deferred modules, output Schema, or file-level backends must not be silently accepted. Prefer native Python extensions over a keyword for every application demand.
+
+
+## Trace acceptance
+
+Verify exact Config values and scope, missing receivers, native load/build returns, unchanged State/reducers, static and conditional routes, Command/Send, actual entries, loops/concurrency, sync/async, schema/Runtime injection, interrupt/resume, errors, explicit summaries and default content exclusion. Test disabled nested graphs, other callbacks, and native subgraph discovery. Run the full regression suite; trace-off behavior must remain unchanged.
+
+
+## Subgraph acceptance
+
+Check @source scope/body/name rules, literal Markdown markers, independent Schema defaults, relative references, missing/malformed children, cycle diagnostics (including symlinks), repeated/diamond references, rebuild snapshots, native reducer behavior, child @End and parent router ordering, tools/model/context propagation, concurrent Send, sync/async checkpoint resume, per-file trace switches and parent execution links. Execute the bilingual 19-subgraphs demos without a network. parse/--check remains current-file-only.

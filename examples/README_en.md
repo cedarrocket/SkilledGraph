@@ -61,3 +61,8 @@ Message objects/lists preserve roles, metadata and order. Strings become HumanMe
 17's separate looping Host leaves standard single-run behavior unchanged. 18 demonstrates pure-code concurrent merging. Their 20 tests and live three-turn memory run are in [reducer acceptance](../docs/development/ADVANCED_REDUCERS_ACCEPTANCE_en.md).
 
 Use workflow_cn.md for Chinese, workflow_en.md for English. Unsuffixed originals remain compatibility entries. Tests and historical acceptance dates/counts retain their original scope; see the localization report for new verification.
+
+
+## Reusable subgraphs (19)
+
+[19-subgraphs](19-subgraphs/README_en.md) mounts one review graph twice, preserving independent graph definitions and hierarchical execution traces. Includes an offline demo.

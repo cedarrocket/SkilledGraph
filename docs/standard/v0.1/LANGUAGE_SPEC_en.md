@@ -1,8 +1,8 @@
 # SkilledGraph v0.1 Language Specification
 
-> 2026-10-09: tool calling is implemented. The extension sections at the end update the earlier setting allowlist, interfaces, and scope.
+> 2026-10-17: includes tool calling, request_input, monty, experimental traces, and Subgraph references. Extension sections specify their contracts.
 
-Status: current language specification. Date: 2026-10-09. Terms and authority are defined in the [standard entry](README_en.md). This document defines Markdown input and graph semantics; builtin execution and model adaptation are defined in the [implementation whitepaper](IMPLEMENTATION_WHITEPAPER_en.md).
+Status: current language specification. Date: 2026-10-17. Terms and authority are defined in the [standard entry](README_en.md). This document defines Markdown input and graph semantics; builtin execution and model adaptation are defined in the [implementation whitepaper](IMPLEMENTATION_WHITEPAPER_en.md).
 
 Reading order: §§1–4 define characters, context, and file structure; §§5–7 define settings, body extraction, and transition tables; §§8–10 define control flow, extension boundaries, and diagnostics; §11 lists deferred features.
 
@@ -34,13 +34,13 @@ HWS0         = { HWS } ;
 HWS1         = HWS, { HWS } ;
 NAME_CHAR    = Unicode_Letter | Unicode_Number | "_" | "-" ;
 NAME         = NAME_CHAR, { NAME_CHAR } ;
-NODE         = "#", HWS1, "[Node]", HWS1, NAME, HWS0 ;
+NODE         = "#", HWS1, ("[Node]" | "[ToolNode]" | "[Subgraph]"), HWS1, NAME, HWS0 ;
 CONFIG       = "#", HWS1, "[Config]", HWS0 ;
 TRANSITIONS  = "##", HWS1, "[Transitions]", HWS0 ;
 SETTING      = "-", HWS1, "**@", KEY, "**", HWS0, ":", HWS0, VALUE ;
-KEY          = "host" | "state" | "uses" | "router" ;
+KEY          = "host" | "state" | "uses" | "router" | "tools" | "trace" | "source" ;
 DESCRIPTION  = ">>>", REST_OF_LINE ;
-ROUTE_KEY    = NAME | "@Default" ;
+ROUTE_KEY    = NAME | "@Default" | "@ToolCalls" | "@Otherwise" ;
 TARGET       = NAME | "@End" ;
 LIST_RECORD  = "-", HWS1, ROUTE_KEY, HWS0, "->", HWS0, TARGET, HWS0 ;
 BLANK        = HWS0 ;
@@ -89,6 +89,8 @@ Settings use `- **@KEY**: VALUE`, case-sensitively. Only outer HWS is trimmed; v
 | --- | --- | --- |
 | @host | explicit Config | select the Host reference for the launcher |
 | @state | explicit Config | select the native State schema before construction |
+| @trace | Explicit Config | Experimental node and routing observation; `on` or `off` |
+| @source | Subgraph | required raw child graph file path |
 | @uses | node body | select Hardcode_Execution_Backend and its reference |
 | @router | node body | select the callable obtaining a route key after node execution |
 
@@ -216,7 +218,7 @@ Validate targets after reading all nodes, allowing forward references. Read-only
 
 ## 11. Deferred features
 
-No initial-version syntax is defined for file-level Hardcode_Execution_Backend selection, module references, model-output Schema settings, material-history-off, dedicated escapes, HTML comments, @failed, retry/recovery, DSL parallel dispatch/subgraphs, or model/I/O configuration expressions.
+No initial-version syntax is defined for file-level Hardcode_Execution_Backend selection, module references, model-output Schema settings, material-history-off, dedicated escapes, HTML comments, @failed, retry/recovery, DSL parallel dispatch, or model/I/O configuration expressions.
 
 They are not hidden features; unknown settings fail. Deferring DSL expression does not prevent Host/native Python capabilities or introduce universal permission/control-flow prohibitions.
 
@@ -253,3 +255,48 @@ This uses standard messages. The framework does not repair custom reducers or gu
 ## Optional sandbox extension (2026-10-09)
 
 `- **@uses**: monty:./program_en.py`, or the same reference in @router, is an optional builtin in existing reference syntax, not a new setting, node kind, or reducer declaration. File payload and return contracts are in the whitepaper's monty section.
+
+## Experimental extension: execution trace (2026-10-17)
+
+```markdown
+# [Config]
+- **@trace**: on
+```
+
+`@trace` is a file-level setting in an explicit Config. Its only values are unquoted, lowercase `on` and `off`, after ordinary outer horizontal-whitespace trimming. Omission means `off`. Node/ToolNode placement, duplicate declarations, and other values are parse errors. There is no per-node override or DSL storage path.
+
+`on` requests observation of DSL node execution and routing. A supported runtime receiver is required; an unsupported execution must fail clearly rather than silently discard the requested trace. Native builder construction itself does not execute the graph and may defer receiver validation to execution. The public runtime/Host integration is specified in the implementation whitepaper.
+
+Trace records remain outside business State and messages. They do not select reducers, change route keys, introduce edges, invoke a model, or automatically become model memory. A completed node may still return a failure route; a selected target is not proof that it executed. Native interrupts retain their semantics and are recorded separately from execution errors. Parallel completion order is not a dependency path.
+
+The runtime identifies the source graph version and DSL node name, individual executions, outcomes, updated field names and observed route decisions. It does not infer domain-specific correctness. Optional short summaries must be explicitly supplied by the application; full State, prompt, and message content are not collected by default. Host code owns collection, persistence and compact model-facing rendering.
+
+
+## Subgraph reference extension (2026-10-17)
+
+```markdown
+# [Subgraph] Research
+- **@source**: ./research.md
+>>> Execute the child graph, then continue in the parent.
+
+## [Transitions]
+- @Default -> Report
+
+# [Node] Report
+Write a report using the available results.
+
+## [Transitions]
+- @Default -> @End
+```
+
+Subgraph is a parent node kind. Names, entry selection, local targets and block boundaries follow Node rules. Its only settings are one required @source and optional @router. @uses, @tools, @state, @host and @trace are not allowed; it is not a Config alias. A Subgraph has no Prompt body: nonempty extracted prose is an error; use >>> descriptions. Ordinary Nodes inside the child retain normal body semantics.
+
+@source is a raw file path without a backend prefix or :ENTRY. It starts with ./, ../ or is a platform-native absolute path. Internal spaces are allowed; no ~, environment or quote expansion. Resolve relative to the file declaring the setting. Read the target as UTF-8 SkilledGraph regardless of extension; references inside it resolve relative to that child file. parse_graph and --check inspect the current file only, without traversing references or importing code. Build reads the full dependency tree and reports missing files, child parse errors or reference cycles.
+
+Each file has an independent graph and name scope. Different files may reuse names; Node, ToolNode and Subgraph names must be unique within a file. Ordinary parent transitions address only local nodes or @End, not child internals. A child starts at its first node. Child @End ends a child path; normal child completion returns to the parent, runs the caller's router if present, then follows its table. Named conditional routes require an explicit router; the child's final reply is not implicitly a route key. Existing @ToolCalls/@Otherwise rules may inspect merged parent messages.
+
+A child uses its own Config @state or default MessagesState, never an inherited parent Schema. Data exchange follows native shared-channel and reducer behavior, not a global mutable State. Subgraph adds no mapping expressions, Schema overrides, private-history adapters or extra model invocation. Use native Python nodes for transformations. A child @host is only used when that file is launched independently, never when referenced.
+
+Repeated references are allowed and have distinct call identities, without sharing mutable execution state. Build-time recursive file references, including symlink aliases, are errors with a reference chain. Runtime transition loops remain allowed. Loaded source definitions are fixed for a build; edits take effect after rebuilding. No hot replacement or inline graph definitions.
+
+Each file owns its @trace switch. Parent on does not enable the child; parent off does not disable a child's on. Any enabled descendant requires a receiver. Records carry call paths, source versions and parent execution links, so repeated calls remain distinguishable. Runtime APIs, resources and persistence are specified in the whitepaper.

@@ -22,7 +22,7 @@ class Directive:
 
 
 _MARKERS = (
-    ("node", re.compile(r"^#[ \t]+\[(?:Node|ToolNode)\]")),
+    ("node", re.compile(r"^#[ \t]+\[(?:Node|ToolNode|Subgraph)\]")),
     ("config", re.compile(r"^#[ \t]+\[Config\]")),
     ("transitions", re.compile(r"^##[ \t]+\[Transitions\]")),
     ("setting", re.compile(r"^-[ \t]+\*\*@")),

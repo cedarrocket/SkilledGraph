@@ -56,14 +56,16 @@ def signal_router(node, action=None, *, implicit_text=False):
         return message.text.strip() if implicit_text and isinstance(message, AIMessage) else None
 
     def invoke(state, config: RunnableConfig):
-        if signal(state):
-            return "@ToolCalls"
-        return resolve(original.invoke(state, config) if original else text_key(state))
+        key = "@ToolCalls" if signal(state) else resolve(original.invoke(state, config) if original else text_key(state))
+        from .trace_integration import record_route
+        record_route(config, key, [next(r.target for r in node.transitions.records if r.key == key)])
+        return key
 
     async def ainvoke(state, config: RunnableConfig):
-        if signal(state):
-            return "@ToolCalls"
-        return resolve(await original.ainvoke(state, config) if original else text_key(state))
+        key = "@ToolCalls" if signal(state) else resolve(await original.ainvoke(state, config) if original else text_key(state))
+        from .trace_integration import arecord_route
+        await arecord_route(config, key, [next(r.target for r in node.transitions.records if r.key == key)])
+        return key
 
     if original:
         schema = _get_branch_path_input_schema(original)

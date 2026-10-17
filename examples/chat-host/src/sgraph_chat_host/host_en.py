@@ -9,7 +9,7 @@ from uuid import uuid4
 
 from langchain_core.messages import AIMessage, HumanMessage, convert_to_messages
 
-from skilledgraph import load_graph
+from skilledgraph import load_graph, parse_graph
 from skilledgraph.binding import load_file_object
 from .host_config_en import model_options, opencode_go_options
 from .terminal_en import terminal_reader
@@ -51,13 +51,14 @@ def run_chat(graph, *, input_stream=None, output_stream=None, error_stream=None)
 
     def run(text, read=None):
         graph_input = {"messages": [HumanMessage(content=text)]}
+        shown_messages = []
         while True:
-            pending = []
+            pending = {}
             interrupted = False
-            for update in graph.stream(graph_input, config=config, stream_mode="updates"):
+            for namespace, update in graph.stream(graph_input, config=config, stream_mode="updates", subgraphs=True):
                 if "__interrupt__" in update:
                     interrupted = True
-                    pending.extend(update["__interrupt__"])
+                    pending.update((item.id, item) for item in update["__interrupt__"])
                 for node, state_update in update.items():
                     if node == "__interrupt__" or not isinstance(state_update, dict):
                         continue
@@ -68,10 +69,19 @@ def run_chat(graph, *, input_stream=None, output_stream=None, error_stream=None)
                         messages = [messages]
                     for message in convert_to_messages(messages):
                         if isinstance(message, AIMessage):
-                            print(f"[{node}] {message.text}", file=output_stream, flush=True)
+                            # Subgraph boundary updates repeat already streamed messages.
+                            # 子图返回会再次携带已显示的消息，按消息 ID 去重。
+                            # Native reducers may assign IDs after an update is emitted.
+                            # 原生 reducer 可能在更新输出后才赋予消息 ID。
+                            if any((old is message or (message.id is not None and old.id == message.id))
+                                   and text == message.text for old, text in shown_messages):
+                                continue
+                            shown_messages.append((message, message.text))
+                            label = " / ".join([part.split(":", 1)[0] for part in namespace] + [node])
+                            print(f"[{label}] {message.text}", file=output_stream, flush=True)
             if not interrupted:
                 return 0
-            for item in pending:
+            for item in pending.values():
                 value = item.value if isinstance(item.value, str) else json.dumps(item.value, ensure_ascii=False)
                 print(f"[Interrupt] {value}", file=error_stream, flush=True)
             if read is None:
@@ -82,7 +92,7 @@ def run_chat(graph, *, input_stream=None, output_stream=None, error_stream=None)
                 raise RuntimeError("Interrupt resume requires a graph compiled with a checkpointer")
             replies = {}
             try:
-                for item in pending:
+                for item in pending.values():
                     if len(pending) > 1:
                         print(f"[Reply] {item.value}", file=error_stream, flush=True)
                     replies[item.id] = read("Resume> ")
@@ -127,5 +137,13 @@ def main(graph_path: Path, argv: list[str]) -> int:
         model = create_model(profile["model"], base_dir=graph_path.parent,
                              connection_options=profile["options"])
     from langgraph.checkpoint.memory import InMemorySaver
-    graph = load_graph(graph_path, model=model, compile_kwargs={"checkpointer": InMemorySaver()})
-    return run_chat(graph)
+    spec = parse_graph(graph_path)
+    from skilledgraph import TraceRecorder
+    recorder = TraceRecorder()
+    graph = load_graph(spec, model=model, trace=recorder,
+                       compile_kwargs={"checkpointer": InMemorySaver()})
+    try:
+        return run_chat(graph)
+    finally:
+        if recorder.events:
+            print("[Trace]\n" + (recorder.render() or "No nodes executed."), file=sys.stderr)

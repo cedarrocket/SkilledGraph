@@ -10,7 +10,7 @@ from .transitions import parse_transitions
 from .validation import is_name, validate_graph
 
 
-_NODE = re.compile(r"^#[ \t]+\[(Node|ToolNode)\][ \t]+([^ \t]+)[ \t]*$")
+_NODE = re.compile(r"^#[ \t]+\[(Node|ToolNode|Subgraph)\][ \t]+([^ \t]+)[ \t]*$")
 _SETTING = re.compile(r"^-[ \t]+\*\*@([^* \t]+)\*\*[ \t]*:[ \t]*(.*)$")
 _HEADERS = {
     "config": re.compile(r"^#[ \t]+\[Config\][ \t]*$"),
@@ -51,13 +51,15 @@ def _setting(source: Source, line: int, allowed: set[str], existing: list[Settin
     if match is None:
         source.fail("setting.syntax", "Expected - **@KEY**: VALUE", line)
     key = match[1]
-    if key not in {"host", "state", "uses", "router", "tools"}:
+    if key not in {"host", "state", "uses", "router", "tools", "trace", "source"}:
         source.fail("setting.unknown", f"Unknown setting: @{key}", line)
     if key not in allowed:
         source.fail("setting.scope", f"Setting @{key} is not allowed in this scope; file settings require Config", line)
     value = match[2].strip(" \t")
     if not value:
         source.fail("setting.empty", f"Setting @{key} requires a value", line)
+    if key == "trace" and value not in {"on", "off"}:
+        source.fail("setting.trace", "@trace requires on or off", line)
     if any(item.key == key for item in existing):
         source.fail("setting.duplicate", f"Duplicate setting: @{key}", line)
     start = match.start(2) + len(match[2]) - len(match[2].lstrip(" \t"))
@@ -109,7 +111,12 @@ def parse_source(source: Source) -> GraphSpec:
             if node is not None and node.transition_line is not None:
                 source.fail("transitions.content", "Settings and independent descriptions are not allowed in Transitions", line)
             if kind == "setting":
-                allowed = ({"tools", "router"} if node.kind == "ToolNode" else {"uses", "router"}) if node else {"host", "state"} if config_start is not None else set()
+                if node:
+                    allowed = {"Node": {"uses", "router"},
+                               "ToolNode": {"tools", "router"},
+                               "Subgraph": {"source", "router"}}[node.kind]
+                else:
+                    allowed = {"host", "state", "trace"} if config_start is not None else set()
                 settings = node.settings if node else config_settings
                 settings.append(_setting(source, line, allowed, settings))
             else:

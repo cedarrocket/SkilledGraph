@@ -88,13 +88,14 @@ sgraph examples/01-assistant/workflow_cn.md
 
 ---
 
-## 18 个开箱即用的示例与实战应用
+## 19 个开箱即用的示例与实战应用
 
 所有示例均位于 [`examples/`](examples/README_cn.md)，涵盖从 6 行代码的最小节点到复杂的多步工程 Agent（均支持 `--demo` 离线运行）：
 
 - **基础构建块（`01` ~ `11`）**：单节点对话、多步链、列表/表格条件路由、Python 路由、`pyfunction` 材料注入、自定义 State Reducer、原生 `Command.goto`、纯计算图、[工具调用 (`10-tool-calling`)](examples/10-tool-calling/workflow_cn.md)、[人工中断恢复 (`11-interrupt`)](examples/11-interrupt/workflow_cn.md)。
 - **5 个实用工程 Agent（`12` ~ `16`）**：本地知识库检索与引用核验、CSV 报表审计与数值验算、带人工审批的邮件草稿助手、三视角并行代码审查、动态 `Send` 批量文档摘要（详见[实用 Agent 验收记录](docs/development/PRACTICAL_AGENTS_ACCEPTANCE_cn.md)）。
 - **高级状态与并发实验（`17` ~ `18`）**：[多轮 ReAct 与上下文压缩](examples/17-react-memory/README_cn.md)、[并发 Reducer 实验室](examples/18-reducer-lab/README_cn.md)（详见[高级 Reducer 验收记录](docs/development/ADVANCED_REDUCERS_ACCEPTANCE_cn.md)）。
+- **子图复用（`19`）**：[重复调用审查图与分层执行追踪](examples/19-subgraphs/README_cn.md)，提供离线示例。
 - **独立终端 Coding Agent（[`sgraph_agent`](sgraph_agent/README_cn.md)）**：基于 SkilledGraph 构建的持续多轮 ReAct 终端助手，支持文件读写、Bash、Monty 沙箱、逐次工具审批与自动上下文压缩（安装 `pip install -e '.[agent]'` 后运行 `sgraph-agent`，详见[验收报告](docs/development/SGRAPH_AGENT_ACCEPTANCE_cn.md)）。
 
 ---
@@ -126,7 +127,7 @@ result = graph.invoke({"messages": [HumanMessage(content="你好！")]})
 | --- | --- |
 | **新手入门、图文教程、常见报错排查** | **[新手教程与 DSL 开发手册 (`docs/tutorials/`)](docs/tutorials/README_cn.md)** |
 | **命令行参数、环境变量、配置向导细节** | [CLI 与使用指南 (`docs/development/USAGE_cn.md`)](docs/development/USAGE_cn.md)、[独立聊天 Host 说明](examples/chat-host/README_cn.md) |
-| **可复制的完整代码模板** | [18 组官方示例目录 (`examples/`)](examples/README_cn.md) |
+| **可复制的完整代码模板** | [19 组官方示例目录 (`examples/`)](examples/README_cn.md) |
 | **严谨的编译器语言规范与 API 契约** | [v0.1 标准文档集](docs/standard/v0.1/README_cn.md)：[语言规范](docs/standard/v0.1/LANGUAGE_SPEC_cn.md)、[实现白皮书](docs/standard/v0.1/IMPLEMENTATION_WHITEPAPER_cn.md)、[开发指南](docs/standard/v0.1/DEVELOPMENT_GUIDE_cn.md) |
 | **测试覆盖、真实模型与跨平台验收证据** | [文档分类入口](docs/README_cn.md)、[项目当前状态](docs/development/STATUS_cn.md)、[工具记录](docs/development/TOOLS_COMPLETION_cn.md)、[语法验收样本](tests/fixtures/language/README_cn.md) |
 

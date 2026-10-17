@@ -1,8 +1,8 @@
 # SkilledGraph v0.1 语言规范
 
-> 2026-10-09：工具调用扩展已实现；本文件末尾扩展章节更新原有白名单、接口和范围约定。
+> 2026-10-17：已纳入工具调用、request_input、monty、实验性执行记录和子图引用；具体契约见扩展章节。
 
-状态：当前语言规范。日期：2026-10-09。术语与文档效力见[开发基石](README_cn.md)。本规范定义 Markdown 输入及其图语义；内置代码执行与模型适配见[功能实现白皮书](IMPLEMENTATION_WHITEPAPER_cn.md)。
+状态：当前语言规范。日期：2026-10-17。术语与文档效力见[开发基石](README_cn.md)。本规范定义 Markdown 输入及其图语义；内置代码执行与模型适配见[功能实现白皮书](IMPLEMENTATION_WHITEPAPER_cn.md)。
 
 阅读顺序：§1～§4 定义字符、上下文和文件结构；§5～§7 定义设置、正文提取与转移表；§8～§10 定义控制流、扩展和诊断；§11 列出暂缓功能。
 
@@ -34,13 +34,13 @@ HWS0         = { HWS } ;
 HWS1         = HWS, { HWS } ;
 NAME_CHAR    = Unicode_Letter | Unicode_Number | "_" | "-" ;
 NAME         = NAME_CHAR, { NAME_CHAR } ;
-NODE         = "#", HWS1, "[Node]", HWS1, NAME, HWS0 ;
+NODE         = "#", HWS1, ("[Node]" | "[ToolNode]" | "[Subgraph]"), HWS1, NAME, HWS0 ;
 CONFIG       = "#", HWS1, "[Config]", HWS0 ;
 TRANSITIONS  = "##", HWS1, "[Transitions]", HWS0 ;
 SETTING      = "-", HWS1, "**@", KEY, "**", HWS0, ":", HWS0, VALUE ;
-KEY          = "host" | "state" | "uses" | "router" ;
+KEY          = "host" | "state" | "uses" | "router" | "tools" | "trace" | "source" ;
 DESCRIPTION  = ">>>", REST_OF_LINE ;
-ROUTE_KEY    = NAME | "@Default" ;
+ROUTE_KEY    = NAME | "@Default" | "@ToolCalls" | "@Otherwise" ;
 TARGET       = NAME | "@End" ;
 LIST_RECORD  = "-", HWS1, ROUTE_KEY, HWS0, "->", HWS0, TARGET, HWS0 ;
 BLANK        = HWS0 ;
@@ -89,6 +89,8 @@ Transitions 内只接受对应记录格式及允许的空白行。重复标题�
 | --- | --- | --- |
 | @host | 显式 Config | 启动器选择 Host 引用 |
 | @state | 显式 Config | 构建前选择原生 State Schema 引用 |
+| @trace | 显式 Config | 实验性节点与路由记录；值为 `on` 或 `off` |
+| @source | Subgraph | 必需的子图文件路径，不带执行器前缀 |
 | @uses | 节点正文区 | 选择 Hardcode_Execution_Backend 及执行引用 |
 | @router | 节点正文区 | 节点结束时取得路由键的执行引用 |
 
@@ -216,7 +218,7 @@ State 和 Reducer 采用原生定义，不进入 DSL 类型语法。用户可扩
 
 ## 11. 暂缓功能
 
-首版不定义：文件级 Hardcode_Execution_Backend 选择、模块引用、自定义模型输出 Schema 设置、材料保存关闭选项、专用转义、HTML 注释功能、@failed、重试恢复语法、DSL 并行分发／子图、模型或 I/O 配置表达式。
+首版不定义：文件级 Hardcode_Execution_Backend 选择、模块引用、自定义模型输出 Schema 设置、材料保存关闭选项、专用转义、HTML 注释功能、@failed、重试恢复语法、DSL 并行分发、模型或 I/O 配置表达式。
 
 这些不是隐藏功能；未知设置仍报错。暂缓 DSL 表达不限制 Host 或原生 Python 使用其已有能力，不形成通用权限或控制流封禁。
 
@@ -251,3 +253,48 @@ ToolNode 必须声明一次 `- **@tools**: all` 或 `- **@tools**: [name, name]`
 ## 可选沙箱执行器补充（2026-10-09）
 
 `- **@uses**: monty:./program.py`（或同形式的 @router）是已有执行引用槽位的可选内置实现，不新增 DSL 关键字、节点种类或 Reducer 语法。文件 payload 与返回约定由 monty 执行器负责，见[白皮书](IMPLEMENTATION_WHITEPAPER_cn.md)末尾。
+
+## 实验性扩展：执行记录（2026-10-17）
+
+```markdown
+# [Config]
+- **@trace**: on
+```
+
+`@trace` 只允许出现在显式 Config 中。按普通规则裁剪外侧水平空白后，值仅为不加引号的小写 `on` 或 `off`；省略等同 `off`。放在 Node/ToolNode、重复声明或使用其他值均为解析错误。首版没有节点级覆盖或 DSL 保存路径。
+
+`on` 请求观察 DSL 节点执行和路由，需要受支持的运行接收器。执行入口不支持接收时必须明确失败，不能静默丢弃请求的记录。原生 builder 构建本身不执行图，可以在执行时检查接收器。具体公共 API 与 Host 接入见实现白皮书。
+
+记录保存在业务 State 和 messages 之外；不选择 reducer、不改变路由键、不增加边、不调用模型，也不自动成为模型记忆。节点正常完成仍可能返回失败路由；选定目标不代表目标已经执行。原生中断保持其语义，记录时与执行异常区分。并行完成顺序不能被解释成依赖路径。
+
+运行记录关联源图版本、DSL 节点名、每次执行、执行结果、更新字段名及观察到的路由决定。不自动推断业务正确性。可选短摘要必须由应用显式提供，默认不采集完整 State、Prompt 或消息内容。Host 负责收集、保存及呈现给模型的简短反馈。
+
+
+## 子图引用扩展（2026-10-17）
+
+```markdown
+# [Subgraph] Research
+- **@source**: ./research.md
+>>> 此处执行整个子图，结束后继续父层流程。
+
+## [Transitions]
+- @Default -> Report
+
+# [Node] Report
+根据已有结果生成报告。
+
+## [Transitions]
+- @Default -> @End
+```
+
+`Subgraph` 是父图中的节点种类，名称、入口位置、局部目标解析和区块边界与 Node 一致。其设置仅为必需且唯一的 `@source` 与可选 `@router`。不接受 @uses、@tools、@state、@host 或 @trace；它不是 Config 的替代写法。子图节点无 Prompt 语义，提取后的普通正文非空时报错；作者说明使用 `>>>`。子文件内部普通 Node 的正文规则不变。
+
+`@source` 是原始文件路径，不带 backend 前缀或 :ENTRY。必须以 ./、../ 开始，或为当前平台的绝对路径。路径内部空格允许，不展开 ~、环境变量或引号。相对路径以声明该设置的文件目录为基准。引用文件按 UTF-8 SkilledGraph 文件解析，不要求文件扩展名；子文件内部的引用仍相对于子文件。parse_graph 与 --check 只检查当前文件，不递归读取引用或导入代码。构建阶段才读取全部子图依赖，报告文件错误、子图解析错误或引用环。
+
+每个文件定义独立的图和节点名称作用域。不同文件可有同名节点；同一父文件内 Node、ToolNode、Subgraph 名称不能重复。父层普通转移表只能指向当前图的节点或 @End，不能引用子图内部名称。子图从其首节点开始，子图 @End 结束子图路径；正常完成后返回父层，执行调用节点的 router（若有），再按父层转移表继续。具名条件路由要求显式 router，不自动读取子图末条回复当路由键；现有 @ToolCalls/@Otherwise 信号规则仍可观察父层合并后的 messages。
+
+子图用自己的 Config @state；省略时用默认 MessagesState，不继承父图 Schema。父子图按原生共享字段和 reducer 规则交换数据，不构成一个全局可变 State。Subgraph 不提供字段映射、Schema 覆盖、私有历史适配或额外模型调用。需要转换时使用原生 Python 节点。子文件 @host 仅独立启动该文件时有效，被引用时不执行。
+
+同一文件可被多处引用并具有独立调用身份；不复用可变运行状态。构建期文件递归引用（包括符号链接别名）报错并显示链路；转移表形成的运行循环仍然允许。一次构建加载的源定义固定，后续文件编辑仅在重新构建时生效；不提供热替换或内联嵌套定义。
+
+每个文件的 @trace 开关独立：父图开启不自动开启子图，父图关闭也不禁止子图开启。只要任意被引用图开启追踪，执行就需要接收器。记录带调用路径、源文件版本和父执行关联，不能将同一子图的多次调用混为一条执行。具体 API、资源和持久化边界见白皮书。

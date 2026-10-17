@@ -290,7 +290,7 @@ class BoundaryTests(unittest.TestCase):
 
     def test_all_complete_examples_parse(self):
         paths = sorted((ROOT / "examples").glob("*/workflow_en.md"))
-        self.assertEqual(len(paths), 19)  # 18 workflows plus the standard chat Host example.
+        self.assertEqual(len(paths), 20)  # 19 workflows plus the standard chat Host example.
         for path in paths:
             with self.subTest(path=path):
                 self.assertTrue(parse_graph(path).nodes)

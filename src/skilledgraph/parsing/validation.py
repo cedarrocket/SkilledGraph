@@ -1,6 +1,7 @@
 """Graph-wide checks which never inspect or import executable references."""
 
 import unicodedata
+from pathlib import Path
 
 from ..diagnostics import Diagnostic, ParseError
 from ..spec import GraphSpec
@@ -21,6 +22,18 @@ def validate_graph(graph: GraphSpec) -> None:
                 "node.duplicate", f"Duplicate node: {node.name}", node.header_span, "validate",
             ))
         names.add(node.name)
+        if node.kind == "Subgraph":
+            setting = next((s for s in node.settings if s.key == "source"), None)
+            if setting is None:
+                raise ParseError(Diagnostic("subgraph.source", "Subgraph requires @source",
+                                            node.header_span, "validate"))
+            filename = setting.value
+            if not (filename.startswith(("./", "../")) or Path(filename).is_absolute()):
+                raise ParseError(Diagnostic("subgraph.path", "@source requires ./, ../ or an absolute file path",
+                                            setting.value_span, "validate"))
+            if node.prompt:
+                raise ParseError(Diagnostic("subgraph.body", "Subgraph has no prompt body; use >>> for descriptions",
+                                            node.body_span, "validate"))
         if node.kind == "ToolNode":
             setting = next((s for s in node.settings if s.key == "tools"), None)
             if setting is None:

@@ -69,7 +69,7 @@ builder = build_graph(
 )
 ```
 
-Parameters may be omitted when unused; actual capabilities need their dependencies. load takes the same parameters plus compile_kwargs, passed to native compile(). Use Builder for more complex construction. No framework config object or base class is required.
+Parameters may be omitted when unused; actual capabilities need their dependencies. load takes the same parameters plus compile_kwargs, passed to native compile(), and the trace receiver described in the experimental trace API. Use Builder for more complex construction. No framework config object or base class is required.
 
 ### 3.1 Schema selection
 
@@ -315,3 +315,62 @@ Router example:
 ```
 
 The actual [sgraph_agent](../../../sgraph_agent/README_en.md) implements permissions, sessions, and context through its Host/bindings; it does not alter ordinary nodes or basic Host defaults.
+
+
+## Experimental execution trace API (2026-10-17)
+
+An explicit `[Config]` setting `- **@trace**: on` enables tracing; `off` or omission disables it. Values are lowercase and unquoted. Records live outside State, messages and reducers. Completion is not domain success, and a selected route is not proof that its target executed.
+
+`load_graph(..., trace=None)` accepts a `TraceRecorder`. When any graph in the source dependency tree enables tracing, a missing receiver is an error; otherwise this argument is ignored. The result remains a native compiled graph. Parsing and syntax checking require neither a receiver nor runtime dependencies.
+
+```python
+from skilledgraph import TraceRecorder, load_graph
+
+recorder = TraceRecorder()
+graph = load_graph("workflow.md", model=model, trace=recorder)
+try:
+    result = graph.invoke(initial_state)
+finally:
+    print(recorder.render())
+    recorder.save_jsonl("run.jsonl")  # Optional explicit persistence
+```
+
+`build_graph` retains its signature and native Builder return type. After compiling, pass `config={"callbacks": [recorder]}` at invocation. Node entry rejects a missing receiver. Native invoke/stream/ainvoke/astream and other callbacks remain available; receiver failures propagate.
+
+`TraceRecorder.events` is an event snapshot. Fields are sequence, invocation, graph_version, node, execution_id, attempt, event, and event-specific status, updates, error_type, route_key, route_targets, default_targets, summary, graph_scope, source and explicit. graph_version is SHA-256 of UTF-8 GraphSpec.source_text, excluding external Python files; it is not a whole-program reproducibility fingerprint. invocation identifies the outermost observed call. Resume can create a new invocation; Hosts may associate it with a checkpoint thread. Attempts count per invocation/version/node; execution IDs distinguish concurrent entries.
+
+Events are actual node_start, node_end, route and explicit summary. End statuses are completed, error and interrupted. Updates contain field names only; errors contain type names only. Route sources are default, dsl and command. Native Command/Send destinations remain separate from actual entries, repeated Send destinations are retained, and parent scope is PARENT. A State field named goto is not control flow.
+
+Only DSL-registered nodes are marked. Additional native Builder nodes do not automatically become DSL records. Nested DSL graphs with tracing disabled do not inherit the switch. Metadata keys trace_graph_version, trace_node and trace_default_targets are reserved for this integration.
+
+Full State, prompts, messages, tool arguments, Send inputs and exception text are not saved by default. Backends may explicitly emit a short summary (async equivalent: `await atrace_summary(...)`):
+
+```python
+from langchain_core.runnables import RunnableConfig
+from skilledgraph import trace_summary
+
+def verify(state, config: RunnableConfig):
+    trace_summary("rank check failed; orthogonality passed", config=config)
+    return {"route": "failed"}
+```
+
+Summaries are normalized to one line and limited to 300 characters. The caller owns their content. When disabled, no summary is recorded. Summaries do not update State or select routes. render() groups node executions using DSL names without inventing linear dependencies. Only save_jsonl(path) explicitly writes a file. Hosts own recorder lifetime; use a fresh recorder for independent sessions.
+
+The standard chat Host supplies a receiver and prints collected records to stderr on exit, including existing failure/interruption records. Replies remain on stdout; disk persistence is not automatic. A custom Host must explicitly supply rendered feedback alongside the corresponding graph to a model. The switch is not automatic model memory or a cross-turn persistence protocol.
+
+
+## Subgraph construction and runtime (2026-10-17)
+
+Subgraphs add no parameters to build_graph/load_graph. Build first reads all @source dependencies and checks cycles, then imports State/bindings. Immutable parse results are cached per declared path within the build; each call site builds a separate child graph. No compiled child instance is cached across builds. Existing Python module caching still applies; rebuilding DSL is not Python hot reload.
+
+Children compile to native CompiledStateGraph objects and are mounted as parent nodes. They do not pass through Hardcode_Execution_Backend or a custom scheduler. Explicit parent state_schema/input_schema/output_schema apply only to the parent; children use their own @state or MessagesState. Native schemas determine shared and private fields. The model, registered tools, execution bindings and context_schema are shared build resources; tools are not automatically rebound to a model. The caller's @router reference resolves relative to the parent file.
+
+Root compile_kwargs apply only to root compile. Children use default native compile(), allowing native checkpoint/config propagation without copying root interrupt_before/after node lists or enabling persistent child memory across calls. Hosts own threads, context, sync/async invocation and resume. Advanced persistence and transformations remain available through Python/native builders.
+
+Child output merges into parent State using native rules; no automatic delta extraction. For an items field with operator.add in both graphs, parent input ['old'] and child update ['new'] can yield ['old', 'old', 'new'] in the parent, because the child output includes its input. Default add_messages merges by message ID, but this is not universal reducer deduplication. Deletion, compaction and renamed fields need explicit return-boundary design. Use Python adapters for different semantics rather than reducers that guess call boundaries.
+
+load_graph requires a TraceRecorder whenever any file in the dependency tree has @trace:on; if all are off it ignores the receiver. build_graph still returns a native Builder; callers supply the recorder in callbacks when invoking the compiled graph. Enabled node entries validate its presence.
+
+TraceEvent adds graph_path (tuple of static call-site names from root to current graph), graph_source (declaring source path), and parent_execution_id (nearest traced parent node execution, or None). All events carry these fields. Attempts count per invocation/source/call-path/version/node; execution_id distinguishes concurrency. render() displays paths such as InitialReview / Examine. A disabled parent may have no execution record, but the child's graph_path is retained. Native graphs added through Python do not automatically receive DSL static paths. Metadata keys trace_graph_path and trace_graph_source are reserved and generated by DSL construction.
+
+The standard chat Host always prepares a receiver; load_graph enables it according to the dependency tree, and finally prints existing records to stderr. Native subgraphs=True updates show internal node paths; message ID/text deduplication avoids printing child boundary output twice, and interrupt IDs are deduplicated before prompting/resume. No automatic feedback injection or disk persistence. See the complete offline [19-subgraphs example](../../../examples/19-subgraphs/README_en.md).

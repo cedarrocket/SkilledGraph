@@ -1,6 +1,6 @@
 # SkilledGraph v0.1 Standard Documents
 
-Version: v0.1. Updated: 2026-10-09. Current implementation and verification boundaries are in [status](../../development/STATUS_en.md); installation and execution in [usage](../../development/USAGE_en.md).
+Version: v0.1. Updated: 2026-10-17. Current implementation and verification boundaries are in [status](../../development/STATUS_en.md); installation and execution in [usage](../../development/USAGE_en.md).
 
 ## Documents and authority
 
@@ -37,3 +37,9 @@ See [examples](../../../examples/README_en.md), [fixtures](../../../tests/fixtur
 ## Change management
 
 Changes to accepted inputs, interfaces, or observable behavior require matching standards/examples/tests and explicit compatibility notes. Default backend internals may evolve, but observable changes must still be recorded rather than hidden as implementation details.
+
+
+Experimental `@trace` is part of this standard. See the language specification and implementation whitepaper. Tutorials are unchanged in this revision.
+
+
+Subgraph file references and hierarchical traces are included in this standard revision. See the extension sections and [example 19](../../../examples/19-subgraphs/README_en.md).

@@ -76,3 +76,8 @@ None／空列表表示没有额外材料，仍使用已有历史和正文调用�
 ## 高级 Reducer（17～18）
 
 17 提供独立循环 Host，保留基础 Host 的单轮默认行为；18 是纯代码的并发合并实验。运行方式和边界见各例 README，20 项测试及真实模型三轮记忆测试见[验收记录](../docs/development/ADVANCED_REDUCERS_ACCEPTANCE_cn.md)。
+
+
+## 子图复用（19）
+
+[19-subgraphs](19-subgraphs/README_cn.md) 两次引用同一审查图，展示独立图定义、分层追踪与离线运行。

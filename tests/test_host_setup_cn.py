@@ -128,17 +128,19 @@ class SetupTests(unittest.TestCase):
             from sgraph_chat_host.host_cn import main
         except ImportError:
             self.skipTest("requires runtime extra")
+        graph_path = Path(self.temp.name) / "graph.md"
+        graph_path.write_text("# [Node] A\nHello\n", encoding="utf-8")
         profile = {"version": 1, "model": "openai:demo", "options": {
             "base_url": "http://localhost/v1", "use_responses_api": False}}
         with patch.dict(os.environ, {}, clear=True), patch("sgraph_chat_host.host_setup_cn.load_profile", return_value=None), \
              patch("sgraph_chat_host.host_setup_cn.run_setup", return_value=profile) as setup, \
              patch("sgraph_chat_host.host_cn.create_model") as create, patch("sgraph_chat_host.host_cn.load_graph"), \
              patch("sgraph_chat_host.host_cn.run_chat", return_value=0):
-            self.assertEqual(main(self.path, []), 0)
+            self.assertEqual(main(graph_path, []), 0)
             setup.assert_called_once()
             create.assert_called_once()
             create.reset_mock()
-            self.assertEqual(main(self.path, ["--setup"]), 0)
+            self.assertEqual(main(graph_path, ["--setup"]), 0)
             create.assert_not_called()
 
     def test_environment_connection_options_override_saved_values(self):

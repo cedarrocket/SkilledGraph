@@ -88,13 +88,14 @@ New to SkilledGraph? Follow our step-by-step human-friendly tutorials:
 
 ---
 
-## 18 Runnable Examples & Practical Agents
+## 19 Runnable Examples & Practical Agents
 
 Browse [`examples/`](examples/README_en.md) for runnable workflows ranging from a 6-line assistant to multi-step production patterns (all practical agents support `--demo` offline mode):
 
 - **Core Building Blocks (`01` ~ `11`)**: Single-node chat, multi-step chains, list/table routing, Python routers, `pyfunction` material injection, custom State Reducers, native `Command.goto`, state-only computation, [tool calling (`10-tool-calling`)](examples/10-tool-calling/workflow_en.md), and [human interrupts (`11-interrupt`)](examples/11-interrupt/workflow_en.md).
 - **5 Practical Engineering Agents (`12` ~ `16`)**: Local note QA with citation checks, CSV metric auditor, human-approved email drafting, 3-way parallel code review, and dynamic `Send` batch document digest (see [practical agents acceptance](docs/development/PRACTICAL_AGENTS_ACCEPTANCE_en.md)).
 - **Advanced State & Concurrency (`17` ~ `18`)**: [Looping ReAct with memory compaction](examples/17-react-memory/README_en.md) and [concurrent reducer lab](examples/18-reducer-lab/README_en.md) (see [reducer acceptance](docs/development/ADVANCED_REDUCERS_ACCEPTANCE_en.md)).
+- **Subgraph reuse (`19`)**: [Reusable review graphs and hierarchical execution traces](examples/19-subgraphs/README_en.md), with an offline demo.
 - **Terminal Coding Agent ([`sgraph_agent`](sgraph_agent/README_en.md))**: A persistent multi-turn ReAct terminal agent featuring Responses API support, file/Bash/Monty tools, per-call approval prompts, and automatic context compaction (install `skilledgraph[agent]` and run `sgraph-agent-en`; see [acceptance report](docs/development/SGRAPH_AGENT_ACCEPTANCE_en.md)).
 
 ---
@@ -126,7 +127,7 @@ result = graph.invoke({"messages": [HumanMessage(content="Hello!")]})
 | --- | --- |
 | **Beginner onboarding, visual guides & troubleshooting** | **[Tutorials & DSL Handbook (`docs/tutorials/`)](docs/tutorials/README_en.md)** |
 | **CLI flags, environment variables & setup wizard** | [Usage Guide (`docs/development/USAGE_en.md`)](docs/development/USAGE_en.md), [Standard Chat Host](examples/chat-host/README_en.md) |
-| **Copy-pasteable runnable workflow templates** | [18 Official Examples (`examples/`)](examples/README_en.md) |
+| **Copy-pasteable runnable workflow templates** | [19 Official Examples (`examples/`)](examples/README_en.md) |
 | **Normative compiler grammar & implementation contracts** | [v0.1 Standards](docs/standard/v0.1/README_en.md): [Language Spec](docs/standard/v0.1/LANGUAGE_SPEC_en.md), [Implementation Whitepaper](docs/standard/v0.1/IMPLEMENTATION_WHITEPAPER_en.md), [Development Guide](docs/standard/v0.1/DEVELOPMENT_GUIDE_en.md) |
 | **Test status, live model evidence & platform reports** | [Documentation Index](docs/README_en.md), [Project Status](docs/development/STATUS_en.md), [Tool Completion](docs/development/TOOLS_COMPLETION_en.md), [Language Fixtures](tests/fixtures/language/README_en.md), [Windows Report](docs/development/WINDOWS_ACCEPTANCE_en.md) |
 

@@ -70,6 +70,8 @@ class ModelNode(RunnableCallable):
                        if records and records[0].key != "@Default" and node.setting("router") is None
                        and not any(r.key in {"@ToolCalls", "@Otherwise"} for r in records) else {})
 
+        routes = self.routes
+
         def inputs(state, materials):
             history = state.get("messages") if isinstance(state, Mapping) else getattr(state, "messages", None)
             if not isinstance(history, (list, tuple)):
@@ -80,12 +82,12 @@ class ModelNode(RunnableCallable):
             if not isinstance(reply, AIMessage):
                 raise TypeError(f"Node {node.name!r}: model must return an AIMessage")
             update = {"messages": materials + [reply]}
-            if not self.routes:
+            if not routes:
                 return update
             key = reply.text.strip()
-            if key not in self.routes:
-                raise RoutingError(Diagnostic("routing.key", f"Node {node.name!r} returned route {key!r}; legal keys: {tuple(self.routes)!r}", node.transitions.span, "run"))
-            return Command(update=update, goto=self.routes[key])
+            if key not in routes:
+                raise RoutingError(Diagnostic("routing.key", f"Node {node.name!r} returned route {key!r}; legal keys: {tuple(routes)!r}", node.transitions.span, "run"))
+            return Command(update=update, goto=routes[key])
 
         def invoke(state, config: RunnableConfig):
             value = prepare(state) if prepare is not None else None
@@ -94,7 +96,13 @@ class ModelNode(RunnableCallable):
                     value.close()
                 raise TypeError("Async material function requires graph.ainvoke()")
             materials = material_messages(value)
-            return result(model.invoke(inputs(state, materials), config=config), materials)
+            reply = model.invoke(inputs(state, materials), config=config)
+            update = result(reply, materials)
+            if routes:
+                from .trace_integration import record_route
+                key = reply.text.strip()
+                record_route(config, key, [routes[key]])
+            return update
 
         async def ainvoke(state, config: RunnableConfig):
             if not callable(getattr(model, "ainvoke", None)):
@@ -104,6 +112,11 @@ class ModelNode(RunnableCallable):
                 value = await value
             materials = material_messages(value)
             reply = await model.ainvoke(inputs(state, materials), config=config)
-            return result(reply, materials)
+            update = result(reply, materials)
+            if routes:
+                from .trace_integration import arecord_route
+                key = reply.text.strip()
+                await arecord_route(config, key, [routes[key]])
+            return update
 
         super().__init__(invoke, ainvoke, name=node.name, trace=True)

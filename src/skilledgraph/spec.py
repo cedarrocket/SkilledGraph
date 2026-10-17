@@ -71,7 +71,7 @@ class NodeSpec:
     span: SourceSpan
     header_span: SourceSpan
     body_span: SourceSpan
-    kind: Literal["Node", "ToolNode"] = "Node"
+    kind: Literal["Node", "ToolNode", "Subgraph"] = "Node"
 
     def setting(self, key: str) -> str | None:
         return next((item.value for item in self.settings if item.key == key), None)

@@ -71,7 +71,7 @@ builder = build_graph(
 )
 ```
 
-上述参数可以省略，实际使用的能力必须有相应依赖。load 接受相同参数，额外 compile_kwargs 原样交给原生 compile()；更复杂构建可使用 Builder。不要求创建 SkilledGraph 配置对象或继承框架类型。
+上述参数可以省略，实际使用的能力必须有相应依赖。load 接受相同参数，额外 compile_kwargs 原样交给原生 compile()，trace 接收器见实验性执行记录接口；更复杂构建可使用 Builder。不要求创建 SkilledGraph 配置对象或继承框架类型。
 
 ### 3.1 Schema 选择
 
@@ -324,3 +324,62 @@ MCP 客户端/适配器应由 Host 管理连接、异步会话和资源释放；
 ```
 
 完整实际 harness 见 [sgraph_agent](../../../sgraph_agent/README_cn.md)，它的工具许可、会话和上下文策略由自己的 Host／绑定负责，不改变普通节点及基础 Host 的默认行为。
+
+
+## 实验性执行记录接口（2026-10-17）
+
+显式 `[Config]` 中的 `- **@trace**: on` 开启记录，`off` 或省略关闭。只接受未加引号的小写值。记录独立于 State、messages 和 Reducer，不改变节点返回值或跳转行为。节点正常完成不等于业务验证成功；选定路由不等于目标已经执行。
+
+`load_graph(..., trace=None)` 新增可选接收器参数。依赖树中任意图开启时必须提供 `TraceRecorder`，否则加载报错；全部关闭时忽略此参数。返回值仍是原生编译图。解析和语法检查不要求接收器或运行时依赖。
+
+```python
+from skilledgraph import TraceRecorder, load_graph
+
+recorder = TraceRecorder()
+graph = load_graph("workflow.md", model=model, trace=recorder)
+try:
+    result = graph.invoke(initial_state)
+finally:
+    print(recorder.render())
+    recorder.save_jsonl("run.jsonl")  # 显式保存，可省略
+```
+
+`build_graph` 的接口与原生 Builder 返回值不变。自行编译时，Host 在调用配置中提供 `config={"callbacks": [recorder]}`。节点入口检查接收器，缺失则报错。支持原生 invoke/stream/ainvoke/astream；保留其他 callbacks，接收器异常不静默吞掉。
+
+`TraceRecorder.events` 返回事件快照。事件包含 sequence、invocation、graph_version、node、execution_id、attempt、event，以及按事件填写的 status、updates、error_type、route_key、route_targets、default_targets、summary、graph_scope、source、explicit。graph_version 是 GraphSpec.source_text 的 UTF-8 SHA-256，不包含外部 Python 文件，不能作为整个程序可复现性的指纹。invocation 对应最外层观察到的调用；恢复可产生新 invocation，Host 可自行按 checkpoint thread 关联。attempt 按 invocation、图版本和节点计数，并发执行由 execution_id 区分。
+
+事件包括实际 node_start、node_end、route 和显式 summary。结束状态为 completed、error 或 interrupted；updates 仅为更新字段名，error_type 仅为异常类型。route 的来源为 default、dsl 或 command；原生 Command/Send 的目标与实际节点进入分开记录，重复 Send 目标保留，父图跳转标记 PARENT。普通 State 中名为 goto 的字段不是控制流。
+
+记录边界为 DSL 注册节点，不自动把原生 Builder 新增节点解释为 DSL 节点。关闭追踪的嵌套 DSL 图不继承追踪开关。内部 metadata 键 trace_graph_version、trace_node、trace_default_targets 保留给此接口使用。
+
+默认不保存完整 State、正文、消息、工具参数、Send 输入或异常文本。后端可以显式发送短摘要，异步版本为 `await atrace_summary(...)`：
+
+```python
+from langchain_core.runnables import RunnableConfig
+from skilledgraph import trace_summary
+
+def verify(state, config: RunnableConfig):
+    trace_summary("rank check failed; orthogonality passed", config=config)
+    return {"route": "failed"}
+```
+
+摘要转换为单行并限制为 300 字符，内容由调用方负责；关闭追踪时不记录。摘要不修改 State，也不选择路由。render() 按节点执行组织摘要，保留 DSL 节点名称，不把并发记录伪装成线性依赖；save_jsonl(path) 才执行显式文件写入。Host 持有记录器并管理生命周期，建议每次独立运行创建新实例。
+
+标准 chat Host 自动提供接收器，在结束时将记录打印到 stderr，包括已有的失败或中断记录，正常回复仍输出到 stdout；不默认写磁盘。自定义 Host 若要让模型利用反馈，须自行把 render() 结果与对应图一起交给模型。开关本身不是自动模型记忆或跨轮持久化协议。
+
+
+## 子图构建与运行接口（2026-10-17）
+
+build_graph/load_graph 的现有签名不因子图增加参数。构建先只读解析全部 @source 依赖并检查引用环，再导入 State／执行器。当前构建缓存同一路径的不可变解析结果，每个调用位置独立构建子图；无跨构建的子图实例缓存。Python 文件导入仍遵循既有模块缓存规则，重新构建 DSL 不意味着热重载 Python。
+
+子图编译为原生 CompiledStateGraph，直接挂载为父图节点，不通过 Hardcode_Execution_Backend、不模拟子调度器。父图显式 state_schema/input_schema/output_schema 只作用于父图；子图自行选择 @state 或 MessagesState。子图内部的共享字段和私有字段由原生 Schema 决定。模型对象、已注册工具、执行器绑定及 context_schema 作为构建资源传入子图；模型不会自动重新绑定工具。@router 位于父文件，其引用也按父文件解析。
+
+根 compile_kwargs 只传给根图 compile。子图使用原生默认 compile()，让父层检查点和运行时配置按原生方式传播；不复制根 interrupt_before/after 节点列表，也不擅自开启子图跨调用持久化。Host 继续负责 thread、context、同步／异步调用和恢复。高级独立持久化或数据变换仍可经 Python／原生 Builder 接入。
+
+子图返回值按原生机制合入父 State；框架不推断增量。例如父子图同一 items 字段都使用 operator.add，输入 ['old']、子图追加 ['new']，父图可能得到 ['old', 'old', 'new']，因为子图输出包含输入。默认 add_messages 用消息 ID 合并，但不能由此承诺任意 reducer 自动去重；删除、压缩、字段重命名等也应显式设计返回边界。需要不同语义时使用 Python 适配，不修改 reducer 来猜调用边界。
+
+load_graph 的 trace 接收器要求适用于整个依赖树：任意文件 @trace:on 时必须提供 TraceRecorder；所有文件关闭时忽略接收器。build_graph 返回原生 Builder，编译后通过 callbacks 提供接收器，开启追踪的节点入口检查它。
+
+TraceEvent 增加 graph_path（从根到当前图的调用位置名称元组）、graph_source（声明源文件路径）、parent_execution_id（最近的已追踪父节点执行 ID，无则 None）。每个事件均携带这些字段。attempt 按 invocation、源路径、调用路径、图版本和节点计数；并发执行仍由 execution_id 区分。render() 显示 InitialReview / Examine 等层级。父层关闭追踪时可能没有父执行记录，但子图 graph_path 仍保留。原生 Python 额外挂载的图不承诺具有 DSL 静态调用路径。保留 metadata 键 trace_graph_path、trace_graph_source；仅在使用 DSL 构建接口时生成它们。
+
+标准 chat Host 总是准备接收器，load_graph 按依赖树决定是否启用；有记录时在 finally 输出 stderr。Host 使用原生 subgraphs=True 更新流，显示内部节点路径，并按消息 ID 和文本避免子图返回时重复打印消息；中断 ID 去重后交互恢复。不把记录自动注入业务 messages，不自动持久化。完整中英文离线示例见 [19-subgraphs](../../../examples/19-subgraphs/README.md)。

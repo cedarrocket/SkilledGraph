@@ -46,15 +46,24 @@ def build_graph(path_or_spec, *, state_schema=None, input_schema=None,
 
 def load_graph(path_or_spec, *, state_schema=None, input_schema=None,
                output_schema=None, context_schema=None, model=None, tools=None, bindings=None,
-               compile_kwargs=None):
+               compile_kwargs=None, trace=None):
     """Build and compile a graph, forwarding compile_kwargs to native compile."""
     from .diagnostics import BuildError
 
     spec = path_or_spec if isinstance(path_or_spec, GraphSpec) else parse_graph(path_or_spec)
-    builder = build_graph(spec, state_schema=state_schema, input_schema=input_schema,
-                          output_schema=output_schema, context_schema=context_schema,
-                          model=model, tools=tools, bindings=bindings)
+    from .subgraphs import resolve_tree
+    from .building import build
+    tree = resolve_tree(spec)
+    tracing = tree.requires_trace
+    if tracing:
+        from .tracing import TraceRecorder
+        if not isinstance(trace, TraceRecorder):
+            raise ValueError("@trace: on requires load_graph(..., trace=TraceRecorder())")
+    builder = build(spec, state_schema=state_schema, input_schema=input_schema,
+                    output_schema=output_schema, context_schema=context_schema,
+                    model=model, tools=tools, bindings=bindings, _tree=tree)
     try:
-        return builder.compile(**({} if compile_kwargs is None else compile_kwargs))
+        graph = builder.compile(**({} if compile_kwargs is None else compile_kwargs))
+        return graph.with_config(callbacks=[trace]) if tracing else graph
     except Exception as exc:
         raise BuildError(Diagnostic("build.compile", str(exc), spec.nodes[0].header_span, "compile")) from exc
